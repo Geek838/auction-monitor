@@ -1,0 +1,18 @@
+# Data access and the provider boundary
+
+Sprint 1 is a local, synthetic fixture demonstration. No Copart, IAAI, or Bid.Cars requests are made. The disabled Bid.Cars adapter is a placeholder, not a client or a claim of access. The supplied research links are background references and confer no reuse rights.
+
+## Adding an authorized provider later
+
+1. Obtain written permission covering automated lookup, commercial metadata use, photograph display, AI processing if planned, caching, retention, and deletion. Confirm freshness guarantees and the meaning of each provider identifier.
+2. Implement `AuctionSource` behind the existing domain types. Resolve listing references with the provider's documented authorized mechanism; an IAAI VehicleDetail page ID must be mapped explicitly to its actual stock number. A coincidentally equal string is not proof.
+3. Return corroborated auction identity separately from the observed URL reference. Supply any independently known VIN/make/model/year for cross-checks. Preserve sale events and provider record IDs rather than collapsing by VIN.
+4. Attach provider name, source URL, retrieval time, license scope, field evidence, event date/status, and non-live/historical flags. Never reuse fixture `MOCK` provenance for real records or imply a historical snapshot is live.
+5. Translate permission failures into `NOT_AUTHORIZED` and connectivity/service failures into `SOURCE_UNAVAILABLE`. Neither means the vehicle is absent. Only an actual negative lookup supports `NOT_FOUND`.
+6. Run the contract and regression tests, add provider-specific tests and authorized examples, and keep the fixture adapter available for offline development. Validate against the consented diverse-link feasibility set before making coverage claims.
+
+The fixture adapter demonstrates mapping and conflict handling; it cannot establish what an unlicensed remote service knows. No network egress, secrets, or API keys are required for this sprint. Credentials for a future authorized service must be supplied securely through deployment settings, never source code.
+
+## Deliberately absent
+
+No scraper, headless browsing bypass, unlicensed photo storage, live auction feed, VIN-history purchase, or commercial provider request is implemented. The UI is an identity resolver, not an inspection or financial recommendation.
