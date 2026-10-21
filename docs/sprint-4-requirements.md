@@ -1,6 +1,8 @@
 # Sprint 4 — provider discovery and first authorized integration
 
-Status: revised PO/technical recommendation, 22 October 2026 (Asia/Tbilisi). **Bounded public-source review completed; commercial access and exact integration contract remain unresolved. No provider has been selected or integrated.**
+Status: provider-research recommendation, 22 October 2026 (Asia/Tbilisi). **Bounded public-source review completed; commercial access and exact integration contract remain unresolved. No provider has been selected or integrated.**
+
+**Latest client constraint:** no spending on APIs. The [zero-paid-API implementation scope](sprint-4-zero-api-scope.md) now governs the buildable manual-review slice. The supplier research below remains evidence for a future free or separately permitted source; it does not authorize paid access.
 
 ## Why the scope changed
 

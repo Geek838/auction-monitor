@@ -1,8 +1,8 @@
-# Auction Intelligence — identity and inspection preview
+# Auction Intelligence — vehicle evidence review
 
-A local auction listing resolver and mock inspection preview for buyers importing damaged vehicles into Georgia. Paste a supported Copart or IAAI URL to corroborate a synthetic listing identity, then open an eligible example's evidence-linked preview. Sprint 3 adds authored illustrations, categorized findings and physical-inspection questions without enabling external access or AI analysis.
+A local application for buyers importing damaged vehicles into Georgia. Use **Review your own evidence** to prepare a review from vehicle details, your permitted photos and your own observations without paying for a data or AI API. The separate auction resolver and authored inspection preview remain explicit offline demonstrations.
 
-**All records are synthetic.** The default fixture mode displays MOCK; the explicit offline simulation mode displays SIMULATED. No auction website is fetched. Bid.Cars remains an unlicensed integration candidate with a disabled adapter. There is no AI analysis, repair estimation, bid recommendation, login, payment, or third-party photograph ingestion.
+**User-supplied reviews are unverified.** They are not provider matches or AI damage assessments. Photo bytes stay in the browser; the API receives only typed details, findings and client-declared image metadata. Fixture/simulation records remain synthetic, labelled MOCK/SIMULATED. No auction website is fetched and no paid API is used. Bid.Cars remains disabled. Automatic real auction lookup, AI analysis, repair estimates, bid recommendations, login and payments are not implemented.
 
 ## Run locally
 
@@ -27,6 +27,22 @@ make web
 ```
 
 The API listens on port 8000 and Next.js on port 3000. `GET /api/v1/health` checks API availability. Next.js forwards `/api/v1/*` to the API; `API_BASE_URL` overrides the default server-side destination. See `.env.example`. No environment file is required. To run Next.js with a different API, export `API_BASE_URL` before starting it.
+
+## Review your own evidence — no paid APIs
+
+From the home page select **Review your own evidence**, or open `/review` on your local app.
+
+1. Enter the original Copart or IAAI URL and any vehicle details you know. An IAAI stock number is an optional user claim, separate from the page ID in the URL.
+2. Optionally select up to six permitted local JPEG/PNG images (8 MiB each, 24 MiB total, at most 20 megapixels per original). The browser checks and resizes them, strips metadata from prepared copies, and computes their hashes. It does not upload photo bytes. Use photos you are permitted to process; selecting a photo does not establish its rights or auction identity.
+3. Add your observations, possible concerns or unknowns, linked to an image where applicable. These are **USER_REPORTED** entries; no damage is automatically detected.
+4. Prepare the review. Read the unverified identity, user-reported entries and physical-inspection checklist. Structural, SRS, ADAS, cooling, suspension and mechanical condition remain unknown.
+5. Download the JSON report or print the review using the browser's print dialog. JSON contains metadata and text, not photo bytes. Keep your own images if you need to retain their evidence; print can include the currently displayed local images.
+
+The review is held only in the current page; **Clear review** or refreshing clears it. Editing inputs invalidates the old report. There is no database, saved account history or server photo store. A downloaded or printed copy is under your control and can contain sensitive vehicle information.
+
+`POST /api/v1/manual-reviews` validates bounded user-supplied metadata without calling a provider. It never returns `MATCHED`. Image hashes are client declarations, not server verification of pixels. This route works independently of the configured demonstration provider. The manual-review JSON body is limited to 32 KiB; existing resolver/preview requests retain their 16 KiB limit.
+
+No API subscription or token is required. Hosting, your own device resources and printing are separate operating costs. The [zero-API scope](docs/sprint-4-zero-api-scope.md), [delivery record](docs/sprint-4-delivery.md) and [executed test report](docs/sprint-4-test-report.md) record the delivered boundary and unresolved automatic lookup/AI work.
 
 ## Provider modes (all offline)
 

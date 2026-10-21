@@ -30,3 +30,7 @@ No scraper, headless browsing bypass, unlicensed photo storage, live auction fee
 ## Current provider research
 
 The [22 October public-source review](research/provider-selection-2026-10-22.md) recommends a commercial inquiry to Qopart, with Bid.Cars in parallel. No ready licensed channel has been selected. The [inquiries](research/provider-findings-2026-10-22.md) are drafted but unsent. Auto.dev has documented APIs but does not establish our exact auction-reference mapping or buyer-facing use scope in the reviewed material. No external adapter can be enabled merely by changing a flag.
+
+## Zero-paid-API user review
+
+The separate [manual-review workflow](sprint-4-delivery.md) compiles user-supplied facts and findings without provider calls. Photos remain browser-local; `/api/v1/manual-reviews` receives bounded text and client-declared metadata only. This does not grant a provider license, verify a VIN/listing, enable a real adapter or attach user images to the authored MOCK engine. No paid API was activated.

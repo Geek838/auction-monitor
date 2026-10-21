@@ -78,3 +78,9 @@ git pull
 ```
 
 The dependency refresh installs the pinned PNG decoder used to validate authored fixture images. Restart the two terminals using the commands above. Resolve the Copart example and select **Open MOCK inspection preview**. The images are project-authored illustrations; no auction photo or AI service is used. See the README for partial, missing-photo and engine-failure examples. This guide does not claim the native Windows test suite has been executed locally.
+
+## Zero-paid-API manual review
+
+After `git pull`, start the existing API and web commands above, then select **Review your own evidence** from the home page. No new API account, key or paid service is required. The existing dependency requirements still apply.
+
+Use an original Copart/IAAI URL and photos you are permitted to process. Photo bytes remain in your browser; the backend validates user-supplied text and declared metadata only. The result is unverified and is not AI analysis. JSON export excludes image bytes; browser print can include the displayed images. Refreshing clears the current review.

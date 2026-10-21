@@ -16,9 +16,11 @@ from app.inspections.models import InspectionPreview, PreviewRequest
 from app.inspections.service import asset_bytes, attach_preview_context, create_preview
 from app.inspections.body_limit import PreviewBodyLimit
 from app.providers.base import NotAuthorized
+from app.manual_reviews.models import ManualReviewReport, ManualReviewRequest
+from app.manual_reviews.service import compile_manual_review
 
 logger = logging.getLogger(__name__)
-app = FastAPI(title="Auction Intelligence — identity and mock inspection preview", version="0.3.0")
+app = FastAPI(title="Auction Intelligence — identity and user-supplied reviews", version="0.4.0")
 app.add_middleware(PreviewBodyLimit)
 # Fail startup on unsupported configuration; never silently switch into mock mode.
 get_selected_provider()
@@ -44,6 +46,16 @@ async def health(provider: Annotated[AuctionSource, Depends(get_provider)]) -> d
     data_type = {"FIXTURE": "MOCK", "SIMULATED": "SIMULATED"}.get(context.mode, "UNAVAILABLE")
     return {"status": "ok", "provider": context.id.upper(), "data_type": data_type,
             "provider_context": context.model_dump(mode="json")}
+
+
+@app.post("/api/v1/manual-reviews", response_model=ManualReviewReport)
+async def manual_review(request: ManualReviewRequest, response: Response) -> ManualReviewReport:
+    response.headers["Cache-Control"] = "no-store, max-age=0"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    try:
+        return compile_manual_review(request)
+    except InvalidAuctionURL as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @app.post("/api/v1/auction/resolve", response_model=ResolutionResult)

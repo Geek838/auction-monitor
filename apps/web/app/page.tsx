@@ -14,6 +14,7 @@ export default function Home() {
           <p className="intro-copy">Before the bid, check the identity. Paste a Copart or IAAI link to match the exact auction listing and see the evidence behind it.</p>
         </div>
         <Resolver />
+        <section className="manual-home-link"><p className="eyebrow">HAVE YOUR OWN DETAILS AND PHOTOS?</p><a href="/review">Review your own evidence</a><p>Compile a manual review with your photos and notes. No paid API is needed; your entries remain unverified.</p></section>
       </main>
       <footer><span>Auction Intelligence</span><span>Built for buyers importing into Georgia.</span></footer>
     </div>
