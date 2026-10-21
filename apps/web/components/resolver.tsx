@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import ProviderNotice from './provider-notice';
+import InspectionPreview from './inspection-preview';
 import { readProviderContext, type EvidenceOrigin, type ProviderContext, type Resolution, type ResolutionStatus, type Vehicle } from './resolution-types';
 
 const statusCopy: Record<ResolutionStatus, { title: string; description: string }> = {
@@ -75,6 +76,16 @@ export default function Resolver() {
   const [provider, setProvider] = useState<ProviderContext | null>(null);
   const [checkingProvider, setCheckingProvider] = useState(true);
   const input = useRef<HTMLInputElement>(null);
+  const resolveSequence = useRef(0);
+  const resolveAbort = useRef<AbortController | null>(null);
+
+  useEffect(() => () => { resolveSequence.current += 1; resolveAbort.current?.abort(); }, []);
+
+  function updateUrl(next: string) {
+    resolveSequence.current += 1;
+    resolveAbort.current?.abort();
+    setUrl(next); setResult(null); setError(null); setLoading(false);
+  }
 
   useEffect(() => {
     let active = true;
@@ -99,12 +110,16 @@ export default function Resolver() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const request = ++resolveSequence.current;
+    resolveAbort.current?.abort();
+    const controller = new AbortController();
+    resolveAbort.current = controller;
     setLoading(true);
     setError(null);
     setResult(null);
     try {
       const response = await fetch('/api/v1/auction/resolve', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: url.trim() }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url: url.trim() }), signal: controller.signal,
       });
       if (!response.ok) {
         let message = response.status === 422
@@ -126,11 +141,16 @@ export default function Resolver() {
         || !body.provider_context.enabled || !body.provider_context.available)) {
         throw new Error('The source did not confirm available, authorized access. No match is assumed.');
       }
+      if (controller.signal.aborted || resolveSequence.current !== request) return;
       setResult(body);
       setProvider(body.provider_context);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'The resolver could not be reached. Please try again later.');
-    } finally { setLoading(false); }
+      if (!controller.signal.aborted && resolveSequence.current === request) {
+        setError(cause instanceof Error ? cause.message : 'The resolver could not be reached. Please try again later.');
+      }
+    } finally {
+      if (!controller.signal.aborted && resolveSequence.current === request) setLoading(false);
+    }
   }
 
   const context = result?.provider_context ?? provider;
@@ -150,15 +170,15 @@ export default function Resolver() {
         <div className="input-row">
           <input ref={input} id="auction-url" name="url" type="url" autoComplete="off" required maxLength={2048}
             placeholder="https://www.copart.com/lot/51374586" value={url}
-            onChange={event => setUrl(event.target.value)}
-            aria-describedby={`url-help${error ? ' lookup-error' : ''}`} aria-invalid={Boolean(error)} disabled={loading} />
+            onChange={event => updateUrl(event.target.value)}
+            aria-describedby={`url-help${error ? ' lookup-error' : ''}`} aria-invalid={Boolean(error)} />
           <button className="submit-button" disabled={loading} type="submit">{loading ? 'Resolving…' : 'Resolve listing'}<ExternalArrow /></button>
         </div>
         <p id="url-help" className="help">Links are parsed without opening the auction page. IAAI page IDs stay distinct from stock numbers.</p>
       </form>
       {offline && <div className="examples"><span>{context.mode === 'FIXTURE' ? 'Try a fixture:' : 'Try a simulation:'}</span>
         {examples.map(example => <button key={example.url} type="button" disabled={loading}
-          onClick={() => { setUrl(example.url); input.current?.focus(); }}>
+          onClick={() => { updateUrl(example.url); input.current?.focus(); }}>
           {context.mode === 'FIXTURE' ? example.fixture : example.simulation}<ExternalArrow />
         </button>)}
       </div>}
@@ -239,9 +259,10 @@ export default function Resolver() {
             <dt>{field.replaceAll('_', ' ')}</dt><dd>{evidence.kind} · {evidence.source}<br />{evidence.note}</dd>
           </div>)}</dl>
         </details>}
+        {result.status === 'MATCHED' && <InspectionPreview key={`${result.reference.url}-${result.snapshot_fingerprint ?? 'unbound'}`} resolution={result} />}
         {result.warnings.length > 0 && <aside className="warnings" aria-label="Data limitations"><h3>Read before using this result</h3><ul>{result.warnings.map((warning, index) => <li key={index}>{warning}</li>)}</ul></aside>}
       </section>}
     </div>
-    <section className="scope-note"><p className="eyebrow">THE FIRST CHECK</p><p>This prototype checks listing identity and source evidence. It does not assess damage, estimate repairs, or recommend a bid.</p></section>
+    <section className="scope-note"><p className="eyebrow">THE FIRST CHECK</p><p>This prototype checks listing identity and demonstrates an authored mock inspection workflow. It does not analyze actual vehicle photos, estimate repairs, or recommend a bid.</p></section>
   </>;
 }

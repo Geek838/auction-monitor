@@ -119,6 +119,12 @@ class ProviderResolution(BaseModel):
     candidates: list[VehicleSnapshot] = Field(default_factory=list)
 
 
+class PreviewEligibility(BaseModel):
+    available: bool = False
+    reason: str = "No eligible authored inspection preview is available."
+    scenario_id: str | None = None
+
+
 class ResolutionResult(BaseModel):
     status: ResolutionStatus
     reference: AuctionReference
@@ -138,6 +144,8 @@ class ResolutionResult(BaseModel):
     evidence: list[str] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
     reasons: list[str] = Field(default_factory=list)
+    snapshot_fingerprint: str | None = None
+    preview_eligibility: PreviewEligibility = Field(default_factory=PreviewEligibility)
 
 
 class ResolveRequest(BaseModel):

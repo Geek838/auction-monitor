@@ -1,0 +1,74 @@
+{
+  "schema_version": "1",
+  "assets": [
+    {
+      "asset_id": "front-illustration-v1",
+      "filename": "front-illustration-v1.png",
+      "sha256": "74315563e1574796cbf3aea5d5774530f0b978daa88d8c88214e2f5b5216e1eb",
+      "width": 960,
+      "height": 600,
+      "mime_type": "image/png",
+      "title": "Front-quarter illustration",
+      "view_label": "FRONT_QUARTER",
+      "alt_text": "Project-authored front-quarter vehicle illustration with a rust-colored drawn bumper mark; not an auction photo.",
+      "source_kind": "SELF_AUTHORED_FIXTURE",
+      "author": "Project-authored procedural test fixture",
+      "rights_reference": "docs/inspection-fixtures.md",
+      "reviewed_by": "Project fixture author; procedural illustration review",
+      "permissions": {
+        "image_display": true,
+        "mock_preview": true,
+        "ai_inference": false,
+        "model_training": false
+      },
+      "revoked": false,
+      "expires_at": null
+    },
+    {
+      "asset_id": "side-illustration-v1",
+      "filename": "side-illustration-v1.png",
+      "sha256": "e0083791fd7263f7fe45d20befb046b58e2a9727d45c2aac937df4f259aca535",
+      "width": 960,
+      "height": 600,
+      "mime_type": "image/png",
+      "title": "Side-view illustration",
+      "view_label": "SIDE",
+      "alt_text": "Project-authored side-view vehicle illustration with a rust-colored drawn panel scuff; not an auction photo.",
+      "source_kind": "SELF_AUTHORED_FIXTURE",
+      "author": "Project-authored procedural test fixture",
+      "rights_reference": "docs/inspection-fixtures.md",
+      "reviewed_by": "Project fixture author; procedural illustration review",
+      "permissions": {
+        "image_display": true,
+        "mock_preview": true,
+        "ai_inference": false,
+        "model_training": false
+      },
+      "revoked": false,
+      "expires_at": null
+    },
+    {
+      "asset_id": "rear-illustration-v1",
+      "filename": "rear-illustration-v1.png",
+      "sha256": "695e99e3c7b854dd0123d6af8596d004936cb36000061f1cfa3fdbf48223ee01",
+      "width": 960,
+      "height": 600,
+      "mime_type": "image/png",
+      "title": "Rear-view illustration",
+      "view_label": "REAR",
+      "alt_text": "Project-authored rear-view vehicle illustration with no highlighted cosmetic feature; hidden condition is not depicted and this is not an auction photo.",
+      "source_kind": "SELF_AUTHORED_FIXTURE",
+      "author": "Project-authored procedural test fixture",
+      "rights_reference": "docs/inspection-fixtures.md",
+      "reviewed_by": "Project fixture author; procedural illustration review",
+      "permissions": {
+        "image_display": true,
+        "mock_preview": true,
+        "ai_inference": false,
+        "model_training": false
+      },
+      "revoked": false,
+      "expires_at": null
+    }
+  ]
+}

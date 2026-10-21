@@ -67,3 +67,14 @@ Remove-Item Env:E2E_PROVIDER_MODE
 ```
 
 No provider keys, real auction records, invoices, or images are needed. Keep credential values out of PowerShell history and repository files if a future authorized integration requires them.
+
+## Updating to Sprint 3
+
+Stop the API and web terminals with Ctrl+C, then run from the repository root:
+
+```powershell
+git pull
+.\.venv\Scripts\python.exe -m pip install -r services/api/requirements.txt
+```
+
+The dependency refresh installs the pinned PNG decoder used to validate authored fixture images. Restart the two terminals using the commands above. Resolve the Copart example and select **Open MOCK inspection preview**. The images are project-authored illustrations; no auction photo or AI service is used. See the README for partial, missing-photo and engine-failure examples. This guide does not claim the native Windows test suite has been executed locally.

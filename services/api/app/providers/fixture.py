@@ -55,15 +55,18 @@ class FixtureProvider:
             snapshot("copart-conflict-a", copart, "70000005"),
             snapshot("copart-conflict-b", copart, "70000005"),
             snapshot("copart-single-conflict", copart, "70000006"),
+            snapshot("copart-engine-failure", copart, "70000007"),
+            snapshot("copart-no-visible", copart, "70000008"),
         ]
-        records[-2].vehicle.vin = "FIXTUREVIN0000002"
-        records[-1].vehicle.vin = "FIXTUREVIN0000002"
+        for record in records:
+            if record.record_id in {"copart-conflict-b", "copart-single-conflict"}:
+                record.vehicle.vin = "FIXTUREVIN0000002"
         self.records = {record.record_id: record for record in records}
         # Separate, explicitly authored reference-channel metadata. Never derive
         # corroborating expectations from a candidate being validated.
         self.reference_metadata = {
             (copart, number): Vehicle(vin="FIXTUREVIN0000001", year=2021, make="Toyota", model="Camry")
-            for number in ("51374586", "70000001", "70000002", "70000005", "70000006")
+            for number in ("51374586", "70000001", "70000002", "70000005", "70000006", "70000007", "70000008")
         }
         self.reference_metadata[(copart, "00012345")] = Vehicle(make="Toyota", model="Camry")
         self.reference_metadata[(iaai, "45371195")] = Vehicle(

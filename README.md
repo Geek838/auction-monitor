@@ -1,6 +1,6 @@
-# Auction Intelligence — auction identity resolver
+# Auction Intelligence — identity and inspection preview
 
-A local auction listing resolver for buyers importing damaged vehicles into Georgia. Paste a supported Copart or IAAI URL to see whether synthetic provider records corroborate the exact listing identity. Sprint 2 adds provider permission checks, structured identity evidence, and source-age reporting without enabling external access.
+A local auction listing resolver and mock inspection preview for buyers importing damaged vehicles into Georgia. Paste a supported Copart or IAAI URL to corroborate a synthetic listing identity, then open an eligible example's evidence-linked preview. Sprint 3 adds authored illustrations, categorized findings and physical-inspection questions without enabling external access or AI analysis.
 
 **All records are synthetic.** The default fixture mode displays MOCK; the explicit offline simulation mode displays SIMULATED. No auction website is fetched. Bid.Cars remains an unlicensed integration candidate with a disabled adapter. There is no AI analysis, repair estimation, bid recommendation, login, payment, or third-party photograph ingestion.
 
@@ -41,6 +41,8 @@ Set `AUCTION_PROVIDER` in the **API terminal** before starting/restarting the AP
 For example on Linux/macOS, stop your API, then run `AUCTION_PROVIDER=simulation make api`. In PowerShell, set `$env:AUCTION_PROVIDER = "simulation"` before the API command in the Windows guide. The UI obtains provider context from the API; no provider selector, API key, or policy override is accepted from the URL form. Unknown configuration fails at API startup. A service failure never silently falls back to synthetic matched data.
 
 Structured policy checks guard provider operations. Image display/storage, inference, training, redistribution and caching remain separate permissions, denied by default. No persistent provider-data cache is implemented. Authorization and freshness are separate: licensed does not mean live, recent retrieval does not make an old snapshot fresh, and unknown source age remains unknown.
+
+The local fixture/simulation modes explicitly permit display of this project's authored preview illustrations. That narrow permission does not enable third-party image ingestion, real AI inference, model training or a photo upload feature.
 
 ```sh
 curl --fail http://127.0.0.1:8000/api/v1/health
@@ -83,6 +85,33 @@ Omit the executable override when using Playwright-managed Chromium. Tests use f
 
 `make test` runs pytest and browser tests together. To serve the production frontend after `make build`, run `npm --prefix apps/web start` with the API running. Test output directories, dependencies, virtualenvs, and build files are ignored by Git.
 
+## Sprint 3: try the inspection preview
+
+After pulling this change, refresh Python dependencies before restarting the backend: image validation adds pinned Pillow. On Linux/macOS use `make install`; on PowerShell:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r services/api/requirements.txt
+```
+
+1. Use `fixture` or `simulation` mode, resolve the Copart or IAAI example below, then select **Open MOCK inspection preview**.
+2. The gallery contains project-authored raster illustrations, each marked **NOT AUCTION PHOTO**. They are generic drawn examples, not images of the resolved real-world vehicle.
+3. Select an image or a finding to navigate its evidence. Findings distinguish **OBSERVED** features of the drawing, **SUSPECTED** inspection questions and **UNKNOWN** condition. No model ran and no confidence percentage is assigned.
+4. Read the physical-inspection checks and evidence gaps. An unmarked illustration does not establish absence of damage or safe operation.
+5. Edit the listing URL or resolve another listing: the previous preview clears. A changed snapshot, altered image, lost permission or unknown scenario cannot reuse the old report.
+
+| URL | Mock-preview behavior |
+| --- | --- |
+| `https://www.copart.com/lot/51374586` | Complete authored front/side example |
+| `https://www.iaai.com/VehicleDetail/41000001~US` | Complete authored example, retaining distinct page/stock identity |
+| `https://www.copart.com/lot/70000002` | Historical, partial example; one view deliberately excluded |
+| `https://www.copart.com/lot/00012345` | Matched metadata; no eligible preview images |
+| `https://www.copart.com/lot/70000007` | Explicit mock engine failure; no findings released |
+| `https://www.copart.com/lot/70000008` | Unmarked rear illustration; safety-critical systems remain UNKNOWN |
+
+The API provides additive `snapshot_fingerprint` and `preview_eligibility` fields on resolution. `POST /api/v1/inspections` accepts only `url` and `expected_snapshot_fingerprint`; it re-resolves the target server-side and returns `COMPLETED`, `PARTIAL`, `BLOCKED` or `FAILED`. Completion describes the mock workflow, never a vehicle passing inspection. The guarded asset route checks the same target binding, current permissions, SHA-256 and decoded PNG type/dimensions before serving an illustration with non-cacheable headers.
+
+No report history, database, jobs, uploads, remote image downloads or model service is involved. Asset source, hashes, authorship and regeneration are documented in [inspection fixtures](docs/inspection-fixtures.md); future real-vision requirements are in [vision readiness](docs/vision-readiness.md).
+
 ## Synthetic examples
 
 Identifiers are strings, including leading zeros. These URL-shaped examples are local fixture keys, not assertions about current real-world lots.
@@ -119,13 +148,14 @@ services/api/app/
   domain/                 Pydantic identities, evidence, outcomes
   resolution/             Local URL parser and exact-match validator
   providers/              AuctionSource, FixtureProvider, disabled BidCarsProvider
+  inspections/            Guarded authored assets, mock engine, snapshot-bound preview
 services/api/tests/       Parser, matcher, provider, API regression tests
 docs/                     Handover, acceptance criteria, design, architecture
 ```
 
 The fixture dataset is versioned with the provider implementation. It uses in-memory records and no persistent user state. Its source timestamps describe synthetic snapshots; they do not promise freshness. See [architecture decisions](docs/decisions/001-resolver-boundaries.md), [provider integration guide](docs/source-integrations.md), [acceptance criteria](docs/sprint-1-requirements.md), and the [supplied handover](docs/auction_intelligence_handover.md).
 
-The [Sprint 1 test report](docs/sprint-1-test-report.md) records the original baseline. See [Sprint 2 delivery](docs/sprint-2-delivery.md), [requirements](docs/sprint-2-requirements.md), and [research templates](docs/research/README.md) for current scope and pending external work. The GitHub Actions workflow is configured for Linux and Windows; do not infer a hosted run has passed from a local result. Python's `requirements.txt` pins the tested runtime and test dependencies; `pyproject.toml` declares the package and direct dependencies. Refresh the pinned file in an isolated environment when intentionally updating those declarations, then rerun the suites and dependency audit.
+The [Sprint 1 test report](docs/sprint-1-test-report.md) records the original baseline. See [Sprint 3 delivery](docs/sprint-3-delivery.md), [requirements](docs/sprint-3-requirements.md), [test report](docs/sprint-3-test-report.md), and [research templates](docs/research/README.md) for the delivered scope and pending external work. The GitHub Actions workflow is configured for Linux and Windows; do not infer a hosted run has passed from a local result. Python's `requirements.txt` pins the tested runtime and test dependencies; `pyproject.toml` declares the package and direct dependencies. Refresh the pinned file in an isolated environment when intentionally updating those declarations, then rerun the suites and dependency audit.
 
 ## Limits and next decisions
 

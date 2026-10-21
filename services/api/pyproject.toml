@@ -6,13 +6,16 @@ build-backend = "setuptools.build_meta"
 name = "auction-intelligence-api"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = ["fastapi==0.146.0", "pydantic==2.14.1", "uvicorn==0.54.0"]
+dependencies = ["fastapi==0.146.0", "pydantic==2.14.1", "uvicorn==0.54.0", "Pillow==13.0.0"]
 
 [project.optional-dependencies]
 test = ["pytest==9.1.1", "httpx==0.28.1"]
 
 [tool.setuptools.packages.find]
 include = ["app*"]
+
+[tool.setuptools.package-data]
+"app.inspections" = ["assets/*.png", "assets/manifest.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

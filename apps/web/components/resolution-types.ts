@@ -39,6 +39,8 @@ export type Resolution = {
   record_id?: string | null; event_id?: string | null;
   event_status?: string | null; event_date?: string | null;
   freshness?: Freshness | null;
+  snapshot_fingerprint?: string | null;
+  preview_eligibility?: { available: boolean; reason: string; scenario_id?: string | null };
 };
 
 export function readProviderContext(value: unknown): ProviderContext | null {

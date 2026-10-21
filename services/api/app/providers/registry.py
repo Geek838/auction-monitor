@@ -13,14 +13,16 @@ def build_provider(name: str) -> GuardedProvider:
     if name == "fixture":
         return GuardedProvider(FixtureProvider(), ProviderPolicy(
             id="fixture", name="Local fixture dataset", mode="FIXTURE", enabled=True,
-            houses=set(AuctionHouse), capabilities={"canonical_lookup", "page_mapping", "vehicle_lookup"},
-            permissions={Purpose.METADATA_LOOKUP: True, Purpose.METADATA_DISPLAY: True},
+            houses=set(AuctionHouse), capabilities={"canonical_lookup", "page_mapping", "vehicle_lookup", "mock_inspection_preview"},
+            permissions={Purpose.METADATA_LOOKUP: True, Purpose.METADATA_DISPLAY: True,
+                         Purpose.IMAGE_RETRIEVAL: True, Purpose.IMAGE_DISPLAY: True},
         ))
     if name == "simulation":
         return GuardedProvider(SimulationProvider(), ProviderPolicy(
             id="simulation", name="Offline provider simulation", mode="SIMULATED", enabled=True,
-            houses=set(AuctionHouse), capabilities={"canonical_lookup", "page_mapping", "vehicle_lookup"},
-            permissions={Purpose.METADATA_LOOKUP: True, Purpose.METADATA_DISPLAY: True},
+            houses=set(AuctionHouse), capabilities={"canonical_lookup", "page_mapping", "vehicle_lookup", "mock_inspection_preview"},
+            permissions={Purpose.METADATA_LOOKUP: True, Purpose.METADATA_DISPLAY: True,
+                         Purpose.IMAGE_RETRIEVAL: True, Purpose.IMAGE_DISPLAY: True},
             freshness_threshold_seconds=86400,
             freshness_basis="Synthetic demonstration threshold (24 hours); not a provider freshness commitment.",
         ))

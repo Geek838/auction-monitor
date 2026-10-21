@@ -40,7 +40,8 @@ test('keyboard submission resolves the exact fixture with visible mock provenanc
   await input.press('Enter');
   await expect(page.getByRole('heading', { name: 'Exact auction identity matched' })).toBeVisible();
   await expect(fact(page, 'Canonical lot number')).toHaveText('51374586');
-  await expect(page.getByText('MOCK', { exact: true })).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Listing resolution result', exact: true })
+    .locator('.result-heading .badges').getByText('MOCK', { exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Record provenance' })).toBeVisible();
   await expect(page.getByText('Freshness unknown', { exact: true })).toBeVisible();
   await expect(fact(page, 'Retrieved at')).toContainText('UTC');
