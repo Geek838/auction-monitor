@@ -80,3 +80,15 @@ Buttons and links have at least 44px usable target areas; keyboard focus has a 3
 ## Acceptance review
 
 Review at 390px and 1440px widths and with keyboard-only use. Confirm the mock notice remains unmistakable in screenshots of every outcome. Confirm IAAI page ID and stock number have different labels even when strings happen to coincide. Confirm historical records never imply live freshness, no absent data is guessed, and no repair/cost/login/payment affordances appear.
+
+## Sprint 2 — source context and age
+
+Retain the paper-and-ink worksheet. Before a lookup, read the configured provider context from health; do not infer fixture mode from a missing response. The notice moves from `CHECKING SOURCE` to `MOCK DATA`, `SIMULATED DATA`, `ACCESS UNAVAILABLE`, or an accurately described external source. A failed health request becomes `SOURCE UNKNOWN`. Synthetic examples appear only in explicitly offline modes.
+
+Keep source permission, record age, and outcome separate. A disabled external source gets no mock or licensed-result badge. Simulation records always say `SIMULATED`; they never imply a commercial license. A real `LICENSED` provenance label, if an authorized integration is later introduced, does not imply a current auction or a live bid. Provider failure never substitutes a fixture vehicle.
+
+Matched evidence sheets show provider record and sale-event IDs. The `Source freshness` section separates source-observation time from local retrieval and assessment times; the API supplies the assessment (`Fresh snapshot`, `Stale snapshot`, `Freshness unknown`, or `Historical record`) and its basis. No browser clock or arbitrary UI threshold decides freshness. Archived records retain the separate `ARCHIVED` badge and historical warning.
+
+The `Identity verification details` disclosure exposes page-to-stock mapping and provider reference metadata, including origin, evidence channel, reference, observation time, and classification. Rejected or unresolved evidence is explicitly supplied for review, not described as verified or independent merely because it was returned. IAAI market/country is shown beside the page ID and in mapping evidence. Field evidence remains a separate disclosure. All six resolution outcomes preserve distinct accessible headings; missing records use fixture, simulation, or provider wording as appropriate. A later failed lookup clears the previous vehicle and provenance. An offline permission-denied example retains its MOCK or SIMULATED mode badge and adds a separate ACCESS DENIED badge; denied external access never receives a synthetic mode badge.
+
+No provider administration or mode-switch UI is introduced. Configuration belongs to the server environment; the buyer still has one listing URL input. Source notices, evidence references, and long event IDs wrap at narrow viewport widths. The initial fixture headings and keyboard submit interaction remain stable for regression tests.

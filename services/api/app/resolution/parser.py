@@ -48,4 +48,4 @@ def parse_auction_url(value: str) -> AuctionReference:
     url = urlunsplit(("https", host, parsed.path.rstrip("/"), "", ""))
     if house == AuctionHouse.COPART:
         return AuctionReference(house=house, url=url, lot_number=match.group(1))
-    return AuctionReference(house=house, url=url, page_id=match.group(1))
+    return AuctionReference(house=house, url=url, page_id=match.group(1), country=match.group(2).upper() if match.group(2) else None)

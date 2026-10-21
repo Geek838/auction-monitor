@@ -1,12 +1,14 @@
-# Auction Intelligence — Sprint 1
+# Auction Intelligence — auction identity resolver
 
-A fixture-only auction listing resolver for buyers importing damaged vehicles into Georgia. Paste a supported Copart or IAAI URL to see whether synthetic provider records corroborate the exact listing identity.
+A local auction listing resolver for buyers importing damaged vehicles into Georgia. Paste a supported Copart or IAAI URL to see whether synthetic provider records corroborate the exact listing identity. Sprint 2 adds provider permission checks, structured identity evidence, and source-age reporting without enabling external access.
 
-**All displayed records are MOCK data.** No auction website is fetched. Bid.Cars is an unlicensed integration candidate, not an enabled service. This sprint contains no AI analysis, repair estimates, bid recommendations, login, payments, or third-party photographs.
+**All records are synthetic.** The default fixture mode displays MOCK; the explicit offline simulation mode displays SIMULATED. No auction website is fetched. Bid.Cars remains an unlicensed integration candidate with a disabled adapter. There is no AI analysis, repair estimation, bid recommendation, login, payment, or third-party photograph ingestion.
 
 ## Run locally
 
 Prerequisites: Python 3.12+, Node.js 24 LTS, npm, and a Chromium browser for browser tests. No database, API keys, or Docker daemon is needed.
+
+**Windows PowerShell:** use the [native Windows commands](docs/windows-setup.md), which do not require `make` or virtualenv activation. The Makefile commands below are for Linux/macOS or an appropriate Unix shell. Windows CI is configured; native Windows execution has not been verified from this Linux development machine.
 
 From the repository root:
 
@@ -26,6 +28,20 @@ make web
 
 The API listens on port 8000 and Next.js on port 3000. `GET /api/v1/health` checks API availability. Next.js forwards `/api/v1/*` to the API; `API_BASE_URL` overrides the default server-side destination. See `.env.example`. No environment file is required. To run Next.js with a different API, export `API_BASE_URL` before starting it.
 
+## Provider modes (all offline)
+
+Set `AUCTION_PROVIDER` in the **API terminal** before starting/restarting the API. An environment file is not loaded automatically.
+
+| Value | Behavior |
+| --- | --- |
+| `fixture` (default) | Hand-authored MOCK records; original fixture examples below. |
+| `simulation` | Hand-authored SIMULATED records for permission/evidence/freshness demonstrations; no commercial rights or live auction access implied. |
+| `bidcars` | Disabled external-provider placeholder. Resolution returns `NOT_AUTHORIZED` before any provider request. |
+
+For example on Linux/macOS, stop your API, then run `AUCTION_PROVIDER=simulation make api`. In PowerShell, set `$env:AUCTION_PROVIDER = "simulation"` before the API command in the Windows guide. The UI obtains provider context from the API; no provider selector, API key, or policy override is accepted from the URL form. Unknown configuration fails at API startup. A service failure never silently falls back to synthetic matched data.
+
+Structured policy checks guard provider operations. Image display/storage, inference, training, redistribution and caching remain separate permissions, denied by default. No persistent provider-data cache is implemented. Authorization and freshness are separate: licensed does not mean live, recent retrieval does not make an old snapshot fresh, and unknown source age remains unknown.
+
 ```sh
 curl --fail http://127.0.0.1:8000/api/v1/health
 curl --fail http://127.0.0.1:8000/api/v1/auction/resolve \
@@ -41,7 +57,7 @@ make check
 make build
 ```
 
-Install a Playwright-managed browser once, then run the desktop and mobile Chromium suite. Playwright starts both applications automatically when they are not already running:
+Install a Playwright-managed browser once, then run the desktop and mobile Chromium suite. Stop your development servers first: Playwright starts isolated API and frontend servers, and fails on an occupied port rather than silently reusing the wrong provider mode.
 
 ```sh
 cd apps/web
@@ -55,6 +71,15 @@ Alternatively, use an already installed Chromium:
 ```sh
 PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium make test-web
 ```
+
+Run alternate-mode browser suites separately:
+
+```sh
+E2E_PROVIDER_MODE=simulation PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium make test-web
+E2E_PROVIDER_MODE=bidcars PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium make test-web
+```
+
+Omit the executable override when using Playwright-managed Chromium. Tests use fixture mode by default. Each mode runs against its actual configured backend; no commercial access is exercised.
 
 `make test` runs pytest and browser tests together. To serve the production frontend after `make build`, run `npm --prefix apps/web start` with the API running. Test output directories, dependencies, virtualenvs, and build files are ignored by Git.
 
@@ -75,7 +100,7 @@ Identifiers are strings, including leading zeros. These URL-shaped examples are 
 | `https://www.copart.com/lot/70000004` | `NOT_AUTHORIZED` — simulated missing permission |
 | `https://www.copart.com/lot/99999999` | `NOT_FOUND` — absent from the fixture dataset |
 
-The API returns HTTP 200 for these domain outcomes, with `status`, parsed `reference`, corroborated `identity` when available, candidates, evidence, reasons, and warnings. Invalid/unsupported URL input returns HTTP 422. Provider errors remain distinct from missing records. A successful result includes vehicle metadata, provenance, per-field evidence, and event metadata.
+The API returns HTTP 200 for these domain outcomes, with `status`, parsed `reference`, corroborated `identity` when available, candidates, evidence, reasons, and warnings. Provider context is returned even when no record is available. Invalid/unsupported URL input returns HTTP 422. Provider errors remain distinct from missing records. A successful result includes vehicle metadata, provenance, field and mapping evidence, source freshness, and event metadata. The existing health `provider` string remains available alongside structured `provider_context`.
 
 ## Supported URL forms and identity
 
@@ -100,7 +125,7 @@ docs/                     Handover, acceptance criteria, design, architecture
 
 The fixture dataset is versioned with the provider implementation. It uses in-memory records and no persistent user state. Its source timestamps describe synthetic snapshots; they do not promise freshness. See [architecture decisions](docs/decisions/001-resolver-boundaries.md), [provider integration guide](docs/source-integrations.md), [acceptance criteria](docs/sprint-1-requirements.md), and the [supplied handover](docs/auction_intelligence_handover.md).
 
-Local validation results and acceptance coverage are recorded in the [Sprint 1 test report](docs/sprint-1-test-report.md). The GitHub Actions workflow runs these checks after the project is pushed; it has not been executed remotely here. Python's `requirements.txt` pins the tested runtime and test dependencies; `pyproject.toml` declares the package and direct dependencies. Refresh the pinned file in an isolated environment when intentionally updating those declarations, then rerun the suites and dependency audit.
+The [Sprint 1 test report](docs/sprint-1-test-report.md) records the original baseline. See [Sprint 2 delivery](docs/sprint-2-delivery.md), [requirements](docs/sprint-2-requirements.md), and [research templates](docs/research/README.md) for current scope and pending external work. The GitHub Actions workflow is configured for Linux and Windows; do not infer a hosted run has passed from a local result. Python's `requirements.txt` pins the tested runtime and test dependencies; `pyproject.toml` declares the package and direct dependencies. Refresh the pinned file in an isolated environment when intentionally updating those declarations, then rerun the suites and dependency audit.
 
 ## Limits and next decisions
 

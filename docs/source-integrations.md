@@ -1,6 +1,16 @@
 # Data access and the provider boundary
 
-Sprint 1 is a local, synthetic fixture demonstration. No Copart, IAAI, or Bid.Cars requests are made. The disabled Bid.Cars adapter is a placeholder, not a client or a claim of access. The supplied research links are background references and confer no reuse rights.
+The resolver remains local and synthetic through Sprint 2. No Copart, IAAI, or Bid.Cars requests are made. The disabled Bid.Cars adapter is a placeholder, not a client or a claim of access. The supplied research links are background references and confer no reuse rights.
+
+## Current offline contract
+
+The closed registry accepts `AUCTION_PROVIDER=fixture` (default), `simulation` (explicitly synthetic), or `bidcars` (disabled). Selecting a name does not grant rights or supply credentials. Unknown names fail at startup. There is no external adapter that a feature flag can enable.
+
+`provider_context` accompanies health and domain-resolution outcomes, including failures and empty results. It distinguishes provider mode, authorization and availability. Record provenance distinguishes MOCK, SIMULATED and the reserved LICENSED type. No existing runtime returns licensed vehicle data. Permission does not establish freshness: source observation time is distinct from retrieval time, archived events are historical, and absent age evidence/thresholds leave freshness unknown.
+
+`GuardedProvider` checks a validated static policy before provider operations. Required purposes and capabilities are explicit; unknown uses are denied. Credential names are metadata, never values. IAAI mapping evidence must identify the exact submitted page/country and canonical stock, with source/channel/time evidence. Reference vehicle metadata has its own origin; deriving it from the candidate is not independent corroboration. Record and sale-event IDs are retained separately.
+
+There is no persistent cache, database, retained provider response, image fetch, or background task. A future storage implementation must respect both use rights and lifecycle limits; the current configuration fields are not a deletion service. See [provider contract and lifecycle decision](decisions/002-provider-contract.md) for policy semantics, compatibility and the boundary of implemented behavior.
 
 ## Adding an authorized provider later
 

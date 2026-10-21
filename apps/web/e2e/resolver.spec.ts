@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 
+test.skip((process.env.E2E_PROVIDER_MODE ?? 'fixture') !== 'fixture', 'Sprint 1 fixture regression runs only against the fixture provider.');
+
 async function resolve(page: Page, url: string) {
   await page.getByLabel('Copart or IAAI listing URL').fill(url);
   await page.getByRole('button', { name: 'Resolve listing', exact: true }).click();
@@ -11,6 +13,27 @@ function fact(page: Page, label: string) {
 
 test.beforeEach(async ({ page }) => { await page.goto('/'); });
 
+test('health and rendered mode identify the actual fixture provider', async ({ page, request }) => {
+  const response = await request.get('/api/v1/health');
+  expect(response.ok()).toBe(true);
+  const health = await response.json();
+  expect(health.provider_context.mode).toBe('FIXTURE');
+  expect(health.provider_context.available).toBe(true);
+  await expect(page.getByText('MOCK DATA', { exact: true })).toBeVisible();
+  await expect(page.getByText('SIMULATED DATA', { exact: true })).toHaveCount(0);
+});
+
+test('failed health lookup stays unknown until an actual resolution supplies context', async ({ page }) => {
+  await page.route('**/api/v1/health', route => route.abort());
+  await page.reload();
+  await expect(page.getByText('SOURCE UNKNOWN', { exact: true })).toBeVisible();
+  await expect(page.getByText('MOCK DATA', { exact: true })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Try a matched Copart fixture', exact: true })).toHaveCount(0);
+  await resolve(page, 'https://copart.com/lot/51374586');
+  await expect(page.getByRole('heading', { name: 'Exact auction identity matched' })).toBeVisible();
+  await expect(page.getByText('MOCK DATA', { exact: true })).toBeVisible();
+});
+
 test('keyboard submission resolves the exact fixture with visible mock provenance', async ({ page }) => {
   const input = page.getByLabel('Copart or IAAI listing URL');
   await input.fill('https://www.copart.com/lot/51374586/?tracking=test');
@@ -19,6 +42,7 @@ test('keyboard submission resolves the exact fixture with visible mock provenanc
   await expect(fact(page, 'Canonical lot number')).toHaveText('51374586');
   await expect(page.getByText('MOCK', { exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Record provenance' })).toBeVisible();
+  await expect(page.getByText('Freshness unknown', { exact: true })).toBeVisible();
   await expect(fact(page, 'Retrieved at')).toContainText('UTC');
   await expect(fact(page, 'Data type')).toContainText('Not a real-time feed');
   await expect(page.getByText('No licensed photos supplied', { exact: true })).toBeVisible();
