@@ -1,6 +1,6 @@
 # Provider assessment and licensing preparation
 
-Implements S2-01; see [Sprint 2](../sprint-2-requirements.md) and handover §§1, 4 Phase 0, 11–14. No current external research or provider contact has been performed. Public availability and the handover's research references do not establish permission, a commercial API, or current capabilities.
+Implements S2-01; see [Sprint 2](../sprint-2-requirements.md) and handover §§1, 4 Phase 0, 11–14. This remains a preparation template. Public-source research was attempted on 22 October 2026 but retrieved no pages because the environment proxy denied HTTPS tunnels; see the [access evidence and owned next actions](provider-research-2026-10-22.md). No current capability/terms assessment or provider contact has been completed. Public availability and the handover's research references do not establish permission, a commercial API, or current capabilities.
 
 ## Initial comparison
 
@@ -13,7 +13,7 @@ All evidence-dependent cells intentionally remain Unknown. The alternative rows 
 | Official or expressly authorized IAAI channel | Unknown | Unknown/not assumed | Unknown | Unknown | Unknown | Unknown | Investigate eligible access |
 | Other authorized provider, to identify | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | No selection made |
 
-Business owner: **unassigned**. Rights reviewer: **unassigned**. Technical reviewer: **unassigned**. No recommendation to enable a provider can be made from this blank comparison.
+Research owner: **PO agent**. Technical reviewer: **root coding agent**. Contract/business signatory and rights reviewer for any actual agreement remain **unassigned**. No recommendation to enable a provider can be made from this blank comparison. Research and supplier comparison belong to the PO and technical lead, not the user.
 
 ## Assessment and evidence record
 
