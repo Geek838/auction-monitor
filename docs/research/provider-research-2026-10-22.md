@@ -8,7 +8,7 @@ Review date: **22 October 2026 (Asia/Tbilisi)**. Research owner: PO agent. Techn
 
 Recommend replacing the photo-intake-first sprint proposal with **provider discovery followed by the first supported integration**. PO owns website/business-model/access/terms research and recommendation; the technical lead owns identity/schema/operation validation. The user is not assigned website investigation, supplier comparison or collection of their own photographs to substitute for this work.
 
-Bid.Cars is first investigation priority because the [handover](../auction_intelligence_handover.md) already identifies it as a metadata/history candidate. West Motors is a parallel user-nominated candidate. Establish the exact `motor.pl` business/domain before substituting a similarly named service. Investigate official Copart/IAAI channels as primary-source alternatives. This is a provisional research order, not a ranking of verified capabilities.
+Bid.Cars is first investigation priority because the [handover](../auction_intelligence_handover.md) already identifies it as a metadata/history candidate. West Motors and Qopart are parallel user-nominated candidates. Establish the exact `motor.pl` business/domain before substituting a similarly named service. Investigate official Copart/IAAI channels as primary-source alternatives. This is a provisional research order, not a ranking of verified capabilities.
 
 ## Access evidence
 
@@ -25,12 +25,16 @@ Method: bounded ordinary GET requests using Python standard HTTPS client; no aut
 | West Motors hostname variant | https://www.westmotors.cz/ | Same failure |
 | Official Copart agreement URL from handover | https://www.copart.com/Content/US/EN/buyer/Sales/Image-and-Data-License-Agreement | Same failure; current clauses unread |
 | Official IAAI homepage | https://www.iaai.com/ | Same failure |
+| Qopart homepage (root follow-up) | https://qopart.az/ | Same failure; no content |
+| User-supplied Qopart example (root follow-up) | https://qopart.az/ge/vehicles/2021-audi-q5-premium-plus-45-tfsi-quattro-s-tronic-wa1baafy1m2015300-cms6ihx2t1s61uu3q18ayw1k7 | Same failure; no listing content retrieved |
 | Public search | https://www.google.com/search?q=Bid.Cars+API+terms | Same failure; no results |
 | Public search | https://www.bing.com/search?q=Bid.Cars+API | Same failure; no results |
 
 Additional guessed discovery URLs (`https://api.bid.cars/`, `https://developer.iaai.com/`, `https://www.iaai.com/marketing/our-services/vehicle-data-services`) failed at the same tunnel. These probes **do not establish that such APIs, hosts or services exist**. Future discovery must follow actual official links; no integration should use guessed endpoints.
 
 The handover's references were recorded on 19 October 2026. They remain background information, not reverified commercial permissions or guarantees. No current pricing, quotas, freshness, coverage, metadata reuse, image/AI rights or IAAI mapping semantics were established here. Unverified does not mean prohibited.
+
+The user supplied the Qopart example as another candidate. Its URL text contains a VIN-shaped identifier and a site-specific record suffix; those strings alone do not establish the original auction house, lot/stock, sale event, data freshness, image provenance or access permissions. Prioritize checking independent auction linkage and any official feed/API/partnership offering once public-source access works. No claim about the page contents or the site's service has been verified.
 
 ## PO and technical lead work queue
 

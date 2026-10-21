@@ -12,7 +12,7 @@ The user authorizes provider research and planning. This does not authorize cont
 
 ## Research status and ownership
 
-The named research targets are **bid.cars, motor.pl and westmotors.cz**, with official auction channels and documented alternative data services considered where relevant. Exact domains, operating entities and offerings must be established from retrieved sources, not guessed from names. A candidate is not a verified supplier.
+The named research targets are **bid.cars, motor.pl, westmotors.cz and qopart.az**, with official auction channels and documented alternative data services considered where relevant. Exact domains, operating entities and offerings must be established from retrieved sources, not guessed from names. A candidate is not a verified supplier.
 
 Ordinary HTTPS reads on 22 October returned environment-proxy CONNECT 403 responses before any site content was obtained. A network permission grant and an outside-sandbox retry did not resolve the restriction. This is **not evidence of a provider ban, missing API, restrictive terms, or site bot protection**. See the [attempted-research evidence record](research/provider-research-2026-10-22.md). No current provider ranking, rights determination or API specification can honestly be established from these attempts.
 
