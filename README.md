@@ -160,3 +160,5 @@ The [Sprint 1 test report](docs/sprint-1-test-report.md) records the original ba
 ## Limits and next decisions
 
 English is the prototype language; Georgian localization timing remains open. Production coverage, data/photo rights, provider contracts, persistence, retention, and freshness require separate decisions. Fixture tests verify resolution behavior and app integration, not live auction accuracy. The disabled Bid.Cars placeholder must remain disabled until authorized integration work is explicitly undertaken.
+
+Provider discovery: the [current research recommendation](docs/research/provider-selection-2026-10-22.md) and [reviewable commercial inquiry drafts](docs/research/provider-findings-2026-10-22.md) record verified public findings and unresolved access questions. No external provider is enabled.

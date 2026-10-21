@@ -1,19 +1,22 @@
 # Provider assessment and licensing preparation
 
-Implements S2-01; see [Sprint 2](../sprint-2-requirements.md) and handover §§1, 4 Phase 0, 11–14. This remains a preparation template. Public-source research was attempted on 22 October 2026 but retrieved no pages because the environment proxy denied HTTPS tunnels; see the [access evidence and owned next actions](provider-research-2026-10-22.md). No current capability/terms assessment or provider contact has been completed. Public availability and the handover's research references do not establish permission, a commercial API, or current capabilities.
+Implements S2-01; see [Sprint 2](../sprint-2-requirements.md) and handover §§1, 4 Phase 0, 11–14. The initial template has now been followed by a bounded public-source review on 22 October 2026. Read the [current recommendation](provider-selection-2026-10-22.md), [Bid.Cars/Qopart evidence and inquiry drafts](provider-findings-2026-10-22.md), and [Auto.dev feasibility](auto-dev-feasibility-2026-10-22.md). No supplier has been contacted or contracted, and no external integration is enabled.
 
-## Initial comparison
+## Current comparison
 
-All evidence-dependent cells intentionally remain Unknown. The alternative rows describe channels to investigate, not services claimed to be available to this project.
+| Candidate | Published access/use evidence | Exact auction-URL fit | Decision |
+| --- | --- | --- | --- |
+| Qopart | Georgian terms require prior written permission for bulk commercial collection; no reviewed public API specification | User example exposes IAAI lot/VIN; original page mapping and event contract unresolved | First commercial inquiry; draft ready, unsent |
+| Bid.Cars | Website use does not grant database rights; no reviewed public API specification | Relevant archive/search product; actual lookup/mapping contract unresolved | Parallel commercial inquiry; adapter disabled |
+| Auto.dev | Documented VIN listings/photos API; internal/end-user license restrictions require clarification | No demonstrated original Copart lot or IAAI page mapping | Not primary resolver on reviewed evidence |
+| Stat.vin | Personal/non-commercial website license and automated-access/reproduction restrictions | Separate supported channel unverified | No website ingestion; separate agreement needed |
+| motor.pl | HTTP 503 temporarily unavailable | Service and capabilities unverified | Unassessed |
+| westmotors.cz | Browser-check page only | Service and capabilities unverified | Unassessed; no bypass |
+| Official Copart/IAAI channels | Referenced pages did not return readable content | Supported channels and project eligibility unverified | Separate official-channel investigation remains open |
 
-| Candidate/channel | Automated commercial metadata access | Copart exact lot lookup | IAAI stock/page mapping | Freshness and history | Image/AI rights | Pricing/quotas | Decision |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Bid.Cars candidate | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | Pending evidence; adapter disabled |
-| Official or expressly authorized Copart channel | Unknown | Unknown | Unknown/not assumed | Unknown | Unknown | Unknown | Investigate eligible access |
-| Official or expressly authorized IAAI channel | Unknown | Unknown/not assumed | Unknown | Unknown | Unknown | Unknown | Investigate eligible access |
-| Other authorized provider, to identify | Unknown | Unknown | Unknown | Unknown | Unknown | Unknown | No selection made |
+Research owner: **PO agent**. Technical reviewer: **root coding agent**. Contract/business signatory and rights reviewer for any actual agreement remain **unassigned**. Research and comparison stay with the team. Contact priority is not approval to enable a provider; use scope, actual schemas and operating terms remain prerequisites.
 
-Research owner: **PO agent**. Technical reviewer: **root coding agent**. Contract/business signatory and rights reviewer for any actual agreement remain **unassigned**. No recommendation to enable a provider can be made from this blank comparison. Research and supplier comparison belong to the PO and technical lead, not the user.
+The assessment fields below remain the checklist for any concrete offer. Published evidence and unresolved items must stay distinct.
 
 ## Assessment and evidence record
 

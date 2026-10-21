@@ -1,10 +1,10 @@
-# Sprint 2 research preparation
+# Provider research evidence and research preparation
 
-This pack implements the preparation deliverables in [Sprint 2 requirements](../sprint-2-requirements.md), S2-01 and S2-06–08, based on [handover](../auction_intelligence_handover.md) §§4–5, 10–14. It contains templates and synthetic examples, not current provider research, agreements, interview findings, or collected datasets.
+This pack implements the preparation deliverables in [Sprint 2 requirements](../sprint-2-requirements.md), S2-01 and S2-06–08, based on [handover](../auction_intelligence_handover.md) §§4–5, 10–14. It contains current public-source provider findings alongside the original templates and synthetic examples. No provider agreement, interview findings or collected validation cohort is established by these files.
 
 | Workstream | Use | Execution status |
 | --- | --- | --- |
-| Provider feasibility | [Assessment and licensing questions](provider-assessment.md) | Candidates unverified; no contact made |
+| Provider feasibility | [Assessment and licensing questions](provider-assessment.md) | Public-source review delivered; no contact, contract or integration |
 | Exact identity | [50-link study plan](identity-study.md), [empty manifest](identity-study-template.csv), [synthetic examples](identity-synthetic-examples.csv) | No real study run; synthetic example rows are unrun |
 | Future inspection evidence | [Repair-cohort preparation](repair-cohort.md), [empty manifest](repair-cohort-template.csv) | No repair cases collected |
 | Local workflow discovery | [Interview guide and synthesis](interview-guide.md) | No participants contacted or interviews completed |
@@ -23,3 +23,7 @@ Assign a business/research owner, a rights reviewer, and a restricted evidence l
 - Publish only rights-reviewed aggregate findings and synthetic examples. Redaction alone does not permit publishing licensed content.
 
 Report pending and excluded evidence honestly. At preparation time the verified counts are **0 real identity-study links, 0 accepted repair examples, and 0 interviews**. Future owners update private working records and a reviewed aggregate report after actual execution; they must not populate these repository templates with restricted material.
+
+## Current provider decision
+
+Read the [22 October 2026 recommendation](provider-selection-2026-10-22.md), [Bid.Cars/Qopart evidence and unsent inquiries](provider-findings-2026-10-22.md), and [Auto.dev technical review](auto-dev-feasibility-2026-10-22.md). Qopart first and Bid.Cars in parallel are negotiation priorities, not selected authorized providers. The earlier network-blocked attempt remains a historical record. The PO owns research and inquiry preparation; the technical lead owns schema/identity validation. No supplier message has been sent.

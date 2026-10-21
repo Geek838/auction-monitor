@@ -2,6 +2,8 @@
 
 Review date: **22 October 2026 (Asia/Tbilisi)**. Research owner: PO agent. Technical reviewer: root coding agent. This records an actual public-documentation access attempt, not a completed API/terms assessment. No provider was contacted, account created, auction record/photo collected or paid service used.
 
+**Follow-up:** the network configuration was subsequently published and ordinary provider reads succeeded. See the [live findings](provider-findings-2026-10-22.md) and [current recommendation](provider-selection-2026-10-22.md). The access failures below are the earlier attempt, not current blanket network status.
+
 ## Finding and recommendation
 
 **Zero current website pages were retrieved.** All ordinary HTTPS reads below failed before content delivery with `Tunnel connection failed: 403 Forbidden`. Search and official auction-site requests failed the same way. Root separately obtained network permission and retried outside the sandbox; the tunnel failure persisted. This is an environment access failure, not evidence that a candidate forbids automation, has no API, or is unavailable to normal users.

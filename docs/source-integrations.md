@@ -1,6 +1,6 @@
 # Data access and the provider boundary
 
-The resolver remains local and synthetic through Sprint 2. No Copart, IAAI, or Bid.Cars requests are made. The disabled Bid.Cars adapter is a placeholder, not a client or a claim of access. The supplied research links are background references and confer no reuse rights.
+The resolver and Sprint 3 authored inspection preview remain local and synthetic. No Copart, IAAI, or Bid.Cars requests are made. The disabled Bid.Cars adapter is a placeholder, not a client or a claim of access. The supplied research links are background references and confer no reuse rights.
 
 ## Current offline contract
 
@@ -10,7 +10,7 @@ The closed registry accepts `AUCTION_PROVIDER=fixture` (default), `simulation` (
 
 `GuardedProvider` checks a validated static policy before provider operations. Required purposes and capabilities are explicit; unknown uses are denied. Credential names are metadata, never values. IAAI mapping evidence must identify the exact submitted page/country and canonical stock, with source/channel/time evidence. Reference vehicle metadata has its own origin; deriving it from the candidate is not independent corroboration. Record and sale-event IDs are retained separately.
 
-There is no persistent cache, database, retained provider response, image fetch, or background task. A future storage implementation must respect both use rights and lifecycle limits; the current configuration fields are not a deletion service. See [provider contract and lifecycle decision](decisions/002-provider-contract.md) for policy semantics, compatibility and the boundary of implemented behavior.
+There is no persistent cache, database, retained external provider response, remote image fetch, or background task. The authored preview serves guarded local PNG illustrations with exact snapshot/hash/current-use checks; these are not auction photographs or AI output. A future storage implementation must respect both use rights and lifecycle limits; the current configuration fields are not a deletion service. See [provider contract and lifecycle decision](decisions/002-provider-contract.md) for policy semantics, compatibility and the boundary of implemented behavior.
 
 ## Adding an authorized provider later
 
@@ -21,8 +21,12 @@ There is no persistent cache, database, retained provider response, image fetch,
 5. Translate permission failures into `NOT_AUTHORIZED` and connectivity/service failures into `SOURCE_UNAVAILABLE`. Neither means the vehicle is absent. Only an actual negative lookup supports `NOT_FOUND`.
 6. Run the contract and regression tests, add provider-specific tests and authorized examples, and keep the fixture adapter available for offline development. Validate against the consented diverse-link feasibility set before making coverage claims.
 
-The fixture adapter demonstrates mapping and conflict handling; it cannot establish what an unlicensed remote service knows. No network egress, secrets, or API keys are required for this sprint. Credentials for a future authorized service must be supplied securely through deployment settings, never source code.
+The fixture adapter demonstrates mapping and conflict handling; it cannot establish what an unlicensed remote service knows. No network egress, secrets, or API keys are required to run the current offline application. Public-source research uses separately configured research domains; this does not enable any runtime provider. Credentials for a future authorized service must be supplied securely through deployment settings, never source code.
 
 ## Deliberately absent
 
-No scraper, headless browsing bypass, unlicensed photo storage, live auction feed, VIN-history purchase, or commercial provider request is implemented. The UI is an identity resolver, not an inspection or financial recommendation.
+No scraper, headless browsing bypass, unlicensed photo storage, live auction feed, VIN-history purchase, or commercial provider request is implemented. The UI provides identity resolution and an explicitly MOCK authored inspection preview; it does not assess a real vehicle or make financial recommendations.
+
+## Current provider research
+
+The [22 October public-source review](research/provider-selection-2026-10-22.md) recommends a commercial inquiry to Qopart, with Bid.Cars in parallel. No ready licensed channel has been selected. The [inquiries](research/provider-findings-2026-10-22.md) are drafted but unsent. Auto.dev has documented APIs but does not establish our exact auction-reference mapping or buyer-facing use scope in the reviewed material. No external adapter can be enabled merely by changing a flag.

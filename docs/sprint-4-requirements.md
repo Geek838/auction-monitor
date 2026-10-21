@@ -1,6 +1,6 @@
 # Sprint 4 — provider discovery and first authorized integration
 
-Status: revised PO/technical recommendation, 22 October 2026 (Asia/Tbilisi). **Research attempted; current public-source verification is blocked. No provider has been selected or integrated.**
+Status: revised PO/technical recommendation, 22 October 2026 (Asia/Tbilisi). **Bounded public-source review completed; commercial access and exact integration contract remain unresolved. No provider has been selected or integrated.**
 
 ## Why the scope changed
 
@@ -14,7 +14,7 @@ The user authorizes provider research and planning. This does not authorize cont
 
 The named research targets are **bid.cars, motor.pl, westmotors.cz and qopart.az**, with official auction channels and documented alternative data services considered where relevant. Exact domains, operating entities and offerings must be established from retrieved sources, not guessed from names. A candidate is not a verified supplier.
 
-Ordinary HTTPS reads on 22 October returned environment-proxy CONNECT 403 responses before any site content was obtained. A network permission grant and an outside-sandbox retry did not resolve the restriction. This is **not evidence of a provider ban, missing API, restrictive terms, or site bot protection**. See the [attempted-research evidence record](research/provider-research-2026-10-22.md). No current provider ranking, rights determination or API specification can honestly be established from these attempts.
+The earlier environment CONNECT 403 blocker was resolved after the user published the research-domain network update. The [earlier attempt](research/provider-research-2026-10-22.md) remains historical evidence. Current [provider recommendation](research/provider-selection-2026-10-22.md), [Bid.Cars/Qopart findings](research/provider-findings-2026-10-22.md), and [Auto.dev feasibility](research/auto-dev-feasibility-2026-10-22.md) record actual retrieved sources and limits. Qopart and Bid.Cars are commercial-inquiry candidates, not ready integrations. Auto.dev has documented APIs but no demonstrated exact auction-URL mapping or established buyer-facing use scope. Motor.pl returned 503; West Motors and official auction pages returned unreadable browser/security responses. No ready provider was selected.
 
 | Work | Accountable role | Expected result |
 | --- | --- | --- |
@@ -66,8 +66,8 @@ The user should receive a recommendation and specific decisions, not an empty qu
 
 ## Sequencing and completion
 
-First restore ordinary public-source access and complete S4-01. Then deliver the recommendation and concrete integration choice, implement the supported slice, execute its tests and record the result. If a contract/account decision is needed, complete the public research and concrete integration plan first; ask only for that specific business decision.
+The bounded S4-01 public review and technical recommendation are delivered. Next seek a concrete data-access offer from Qopart first and Bid.Cars in parallel using the prepared, unsent inquiries. Sending requires explicit outreach authorization and an appropriate sending channel. Then evaluate any actual contract/schema and make the S4-02 integration decision before implementing S4-03–05. There is no need to buy a consumer membership or write a speculative scraper. Any new documentation or access response should update the recommendation.
 
-A research report is not an integration, an adapter test double is not live access, and a permission string in configuration is not a license. Sprint delivery must state which of research, selection, implementation and authorized live validation actually completed. Current state: **public-source research blocked; no provider selected; no new application code written**.
+A research report is not an integration, an adapter test double is not live access, and a permission string in configuration is not a license. Sprint delivery must state which of research, selection, implementation and authorized live validation actually completed. Current state: **bounded public-source research delivered; commercial inquiries drafted but not sent; no provider selected; no new application code written**.
 
 The existing consented repair cohort and Georgian workflow interviews remain parallel business work with their own owners, not proof supplied by this sprint. Excluded here: unlicensed scraping, production deployment, paid calls without an agreed budget, external outreach without authorization, repair/landed-cost estimates, taxes, maximum bids, login and payments.
