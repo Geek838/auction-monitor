@@ -84,3 +84,13 @@ The dependency refresh installs the pinned PNG decoder used to validate authored
 After `git pull`, start the existing API and web commands above, then select **Review your own evidence** from the home page. No new API account, key or paid service is required. The existing dependency requirements still apply.
 
 Use an original Copart/IAAI URL and photos you are permitted to process. Photo bytes remain in your browser; the backend validates user-supplied text and declared metadata only. The result is unverified and is not AI analysis. JSON export excludes image bytes; browser print can include the displayed images. Refreshing clears the current review.
+
+## Budget, free VIN details and optional local analysis
+
+After pulling this development increment, use the same backend and frontend startup commands. No new Python/npm dependency or paid API account is required. The home header now links directly to Review evidence, Plan budget and Local photo analysis.
+
+- In Review evidence, enter a full VIN and select **Look up manufacturer details**. This explicitly sends the VIN only to the free official NHTSA service; apply returned fields only after reviewing them. It does not verify the auction listing or vehicle history.
+- In Plan budget, provide cost ranges and dated sources, explicit non-applicable categories and the actual fee schedule. No Georgian tax/repair price defaults are fabricated. Missing costs withhold a bid ceiling.
+- Local photo analysis needs additional installed model software/weights, memory and compute. It is optional and disabled by default. Follow [local vision setup](local-vision.md) for separate Ollama/API process variables; do not assume setting a variable installs or starts a model.
+
+Native Windows execution and hosted CI remain unobserved in the Linux workspace; see the current increment test report for what actually ran.

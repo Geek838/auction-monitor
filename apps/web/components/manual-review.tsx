@@ -2,6 +2,7 @@
 
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { FILE_LIMIT, PHOTO_LIMIT, TOTAL_LIMIT, preparePhoto, type LocalPhoto } from './manual-review-photos';
+import VinLookup from './vin-lookup';
 import { readManualReview, type ManualReviewReport, type ManualReviewRequest, type ReviewClassification, type ReviewFinding } from './manual-review-types';
 
 const emptyFinding = (): ReviewFinding => ({ classification: 'UNKNOWN', photo_id: null, component: '', description: '' });
@@ -144,6 +145,7 @@ export default function ManualReview() {
           <div><label htmlFor="review-model">Model (optional)</label><input id="review-model" value={model} maxLength={80} onChange={event => change(setModel, event.target.value)} /></div>
           {iaai && <div><label htmlFor="review-stock">IAAI stock number (optional)</label><input id="review-stock" value={stock} maxLength={32} inputMode="numeric" pattern="[0-9]+" onChange={event => change(setStock, event.target.value)} /><p className="help">Your reported stock number. It does not verify a page-to-stock match.</p></div>}
         </div>
+        <VinLookup vin={vin} onApply={details => { invalidate(); setVin(details.vin); if (details.year !== null) setYear(String(details.year)); if (details.make !== null) setMake(details.make); if (details.model !== null) setModel(details.model); }} />
       </section>
       <section className="manual-section"><div className="manual-section-title"><span className="mono">02</span><h2>Keep photos beside your notes</h2></div>
         <label htmlFor="review-photos">Choose vehicle photos</label><input id="review-photos" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" multiple disabled={preparing} onChange={choosePhotos} />

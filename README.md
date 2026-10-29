@@ -1,8 +1,10 @@
 # Auction Intelligence — vehicle evidence review
 
-A local application for buyers importing damaged vehicles into Georgia. Use **Review your own evidence** to prepare a review from vehicle details, your permitted photos and your own observations without paying for a data or AI API. The separate auction resolver and authored inspection preview remain explicit offline demonstrations.
+A local evidence and budget-planning application for buyers importing damaged vehicles into Georgia. Review your own photos and notes, optionally retrieve manufacturer details through the free official NHTSA VIN service, and calculate USD cost scenarios and a fee-aware planning bid ceiling from your entered sources. Optional local-model photo analysis uses installed weights rather than a paid AI API.
 
-**User-supplied reviews are unverified.** They are not provider matches or AI damage assessments. Photo bytes stay in the browser; the API receives only typed details, findings and client-declared image metadata. Fixture/simulation records remain synthetic, labelled MOCK/SIMULATED. No auction website is fetched and no paid API is used. Bid.Cars remains disabled. Automatic real auction lookup, AI analysis, repair estimates, bid recommendations, login and payments are not implemented.
+**Identity, provenance and unknowns stay explicit.** The auction resolver still uses synthetic fixture/simulation data; no live auction website or licensed provider is queried. Manufacturer decoding is not an auction match. Budget inputs are user declarations, not verified Georgian prices or tax calculations. Local-model findings remain experimental and unreviewed. No paid API, subscription, account or key is required for these delivered workflows.
+
+Manual-review photos stay in the browser. The separate local-analysis action explicitly sends prepared photo copies to your backend and its loopback Ollama service after permission. VIN lookup sends the entered VIN only to NHTSA after you click its lookup button. Existing fixtures, manual reports, manufacturer metadata and model output are kept separate.
 
 ## Run locally
 
@@ -27,6 +29,36 @@ make web
 ```
 
 The API listens on port 8000 and Next.js on port 3000. `GET /api/v1/health` checks API availability. Next.js forwards `/api/v1/*` to the API; `API_BASE_URL` overrides the default server-side destination. See `.env.example`. No environment file is required. To run Next.js with a different API, export `API_BASE_URL` before starting it.
+
+## Available tools
+
+The home-page header links to **Review evidence**, **Plan budget** and **Local photo analysis**.
+
+| Tool | Route | What works |
+| --- | --- | --- |
+| Vehicle evidence review | `/review` | User-entered details, browser-local photos, observations, JSON export and printing |
+| Free manufacturer lookup | In `/review`, below the VIN fields | Explicit NHTSA vPIC lookup and optional application of make/model/year; no auction or history verification |
+| Budget planner | `/budget` | Entered low/base/high costs, auction-fee bands, coverage/evidence gaps, indicative bid ceiling, export/print/reset |
+| Local photo analysis | `/local-inspection` | Optional installed-model experiment; disabled until local runtime/model are configured |
+| Auction reference resolver | `/` | Existing clearly labelled synthetic identity and authored MOCK-preview demonstrations |
+
+## Budget planning
+
+Enter a hammer-bid assumption and your sourced cost ranges. Address every category with costs or an explicit not-applicable reason. Unknown categories and auction fees remain missing; they are not silently counted as zero. Sources need dates, and user-labelled quotes need an explicit validity end date. The application does not invent a quote expiry or fetch supplier prices.
+
+Auction fees can vary by bid. Enter contiguous bands from zero to an open-ended final band; each band's flat fee plus percentage applies to the **entire bid**, not just its marginal portion. Exclude the same fee from fixed broker costs to avoid double counting. No Copart/IAAI fee table or Georgian tax default is supplied.
+
+For a planning ceiling, also enter conservative market value, required savings and an additional risk reserve; zero must be intentional. The solver uses high costs and bid-dependent fees, testing whole cents. Missing required inputs withhold the ceiling. The result is indicative and based on user inputs, never an independently validated bid recommendation. Costs and results are USD-only; no exchange rate is guessed.
+
+Read the [calculator requirements](docs/v1-budget-requirements.md), [current official Georgian cost evidence](docs/georgia-cost-evidence.md), and [executed increment tests](docs/v1-increment-test-report.md). A researched statute is not a fully validated tax engine.
+
+## Optional local AI
+
+This requires a separate trusted local Ollama installation and eligible image-capable model; the normal app and budget planner work without it. The application never downloads a model from an HTTP request or silently uses a hosted AI service. Start the local runtime with cloud features disabled, then explicitly enable the API feature. See [local vision setup](docs/local-vision.md) and [actual runtime/model smoke evidence](docs/local-model-smoke.md) for tested artifacts, observed limitations and commands.
+
+The first small-model experiment produced weak semantic output. The subsequently tested `qwen3-vl:2b` completed the real browser-proxy/API/runtime path in about 46 seconds and correctly abstained on the owned non-vehicle engineering image. This is runtime and one-case instruction-following evidence, not an automotive benchmark. All model findings remain experimental, with safety-critical systems unknown and no localization overlays or confident safety verdicts.
+
+The [1.0 readiness assessment](docs/v1-release-readiness.md) records the remaining exact-auction, real-image quality, pricing/tax and deployment gates. This delivery is a development increment, not a declaration that the full automatic product is finished.
 
 ## Review your own evidence — no paid APIs
 

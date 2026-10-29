@@ -3,7 +3,12 @@ from starlette.responses import JSONResponse
 
 MAX_JSON_BYTES = 16 * 1024
 JSON_PATHS = {"/api/v1/inspections", "/api/v1/auction/resolve"}
-JSON_LIMITS = {path: MAX_JSON_BYTES for path in JSON_PATHS} | {"/api/v1/manual-reviews": 32 * 1024}
+JSON_LIMITS = {path: MAX_JSON_BYTES for path in JSON_PATHS} | {
+    "/api/v1/manual-reviews": 32 * 1024,
+    "/api/v1/budgets/evaluate": 64 * 1024,
+    "/api/v1/local-inspections": 9 * 1024 * 1024,
+    "/api/v1/vehicles/decode-vin": 4 * 1024,
+}
 
 
 class PreviewBodyLimit:

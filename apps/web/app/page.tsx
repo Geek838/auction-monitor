@@ -5,6 +5,7 @@ export default function Home() {
     <div className="site-shell">
       <header className="masthead">
         <a className="wordmark" href="/" aria-label="Auction Intelligence home">Auction Intelligence<span className="wordmark-dot">.</span></a>
+        <nav aria-label="Vehicle tools"><a href="/review">Review evidence</a><a href="/budget">Plan budget</a><a href="/local-inspection">Local photo analysis</a></nav>
         <span className="edition">GEORGIA / RESEARCH EDITION</span>
       </header>
       <main id="main-content">

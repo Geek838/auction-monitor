@@ -34,3 +34,9 @@ The [22 October public-source review](research/provider-selection-2026-10-22.md)
 ## Zero-paid-API user review
 
 The separate [manual-review workflow](sprint-4-delivery.md) compiles user-supplied facts and findings without provider calls. Photos remain browser-local; `/api/v1/manual-reviews` receives bounded text and client-declared metadata only. This does not grant a provider license, verify a VIN/listing, enable a real adapter or attach user images to the authored MOCK engine. No paid API was activated.
+
+## Free manufacturer metadata and local inference
+
+The optional [NHTSA vPIC integration](free-vin-data.md) is a real free public metadata service, invoked only by an explicit VIN lookup. It has no original auction lot/page mapping and is not registered as an `AuctionSource`. The review remains unverified after manufacturer fields are applied.
+
+The separate [local-model experiment](local-vision.md) sends permitted prepared image bytes to a fixed loopback Ollama endpoint, not a commercial auction source or hosted AI provider. Runtime/model provenance and user consent are independent of metadata/image rights on third-party websites. Existing browser-only manual photo handling is unchanged. Neither feature enables Bid.Cars or removes an authorization gate.
