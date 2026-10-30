@@ -1,12 +1,12 @@
 # Data access and the provider boundary
 
-The resolver and Sprint 3 authored inspection preview remain local and synthetic. No Copart, IAAI, or Bid.Cars requests are made. The disabled Bid.Cars adapter is a placeholder, not a client or a claim of access. The supplied research links are background references and confer no reuse rights.
+The default resolver and Sprint 3 authored inspection preview remain local and synthetic. No direct Copart, IAAI, or Bid.Cars requests are made. The disabled Bid.Cars adapter is a placeholder, not a client or a claim of access. The optional Apibara adapter uses that provider's documented endpoint for metadata only, and requires an enable flag and API key. It has not been exercised with an authenticated live response; fixture mode remains the default.
 
-## Current offline contract
+## Provider contract
 
-The closed registry accepts `AUCTION_PROVIDER=fixture` (default), `simulation` (explicitly synthetic), or `bidcars` (disabled). Selecting a name does not grant rights or supply credentials. Unknown names fail at startup. There is no external adapter that a feature flag can enable.
+The closed registry accepts `AUCTION_PROVIDER=fixture` (default), `simulation` (explicitly synthetic), `bidcars` (disabled), or `apibara` (opt-in external metadata). Selecting a name does not supply credentials. Unknown names fail at startup. The Apibara adapter additionally requires `APIBARA_ENABLE=1` and `APIBARA_API_KEY` in the API process.
 
-`provider_context` accompanies health and domain-resolution outcomes, including failures and empty results. It distinguishes provider mode, authorization and availability. Record provenance distinguishes MOCK, SIMULATED and the reserved LICENSED type. No existing runtime returns licensed vehicle data. Permission does not establish freshness: source observation time is distinct from retrieval time, archived events are historical, and absent age evidence/thresholds leave freshness unknown.
+`provider_context` accompanies health and domain-resolution outcomes, including failures and empty results. It distinguishes provider mode, authorization and availability. Record provenance distinguishes MOCK, SIMULATED and the reserved LICENSED type. The optional adapter has not yet been live-validated. Permission does not establish freshness: source observation time is distinct from retrieval time, archived events are historical, and absent age evidence/thresholds leave freshness unknown.
 
 `GuardedProvider` checks a validated static policy before provider operations. Required purposes and capabilities are explicit; unknown uses are denied. Credential names are metadata, never values. IAAI mapping evidence must identify the exact submitted page/country and canonical stock, with source/channel/time evidence. Reference vehicle metadata has its own origin; deriving it from the candidate is not independent corroboration. Record and sale-event IDs are retained separately.
 
@@ -21,7 +21,7 @@ There is no persistent cache, database, retained external provider response, rem
 5. Translate permission failures into `NOT_AUTHORIZED` and connectivity/service failures into `SOURCE_UNAVAILABLE`. Neither means the vehicle is absent. Only an actual negative lookup supports `NOT_FOUND`.
 6. Run the contract and regression tests, add provider-specific tests and authorized examples, and keep the fixture adapter available for offline development. Validate against the consented diverse-link feasibility set before making coverage claims.
 
-The fixture adapter demonstrates mapping and conflict handling; it cannot establish what an unlicensed remote service knows. No network egress, secrets, or API keys are required to run the current offline application. Public-source research uses separately configured research domains; this does not enable any runtime provider. Credentials for a future authorized service must be supplied securely through deployment settings, never source code.
+The fixture adapter demonstrates mapping and conflict handling; it cannot establish what a remote service knows. No network egress, secrets, or API keys are required to run offline fixture mode. The opt-in Apibara adapter needs a server-side credential; never put it in source code. Its IAAI VehicleDetail page identifier is not treated as a stock number and unresolved page mappings are withheld.
 
 ## Deliberately absent
 

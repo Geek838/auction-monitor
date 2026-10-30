@@ -54,6 +54,9 @@ function OriginDetails({ origin }: { origin: EvidenceOrigin }) {
   </dl>;
 }
 function resultCopy(result: Resolution) {
+  if (result.status === 'MATCHED' && result.provenance?.data_type === 'EXTERNAL_UNVERIFIED') {
+    return { title: 'Provider record matches the submitted lot', description: 'The provider reports the same auction house and lot number. VIN and listing details have not been independently verified.' };
+  }
   if (result.status === 'NOT_FOUND' && result.provider_context.mode === 'FIXTURE') {
     return { title: 'No fixture record found', description: 'This link was parsed, but our test dataset has no matching record. It does not tell us whether the auction listing exists.' };
   }
@@ -67,6 +70,7 @@ function resultBadge(result: Resolution) {
   if (result.provenance?.data_type === 'SIMULATED' || result.provider_context.mode === 'SIMULATED') return 'SIMULATED';
   if (result.provider_context.authorization === 'DENIED') return 'ACCESS DENIED';
   if (result.provenance?.data_type === 'LICENSED') return 'LICENSED DATA';
+  if (result.provenance?.data_type === 'EXTERNAL_UNVERIFIED') return 'UNVERIFIED DATA';
   return 'EXTERNAL SOURCE';
 }
 
@@ -217,7 +221,7 @@ export default function Resolver({ initialUrl = '' }: { initialUrl?: string }) {
             <div><dt>Sale event ID</dt><dd className="mono">{value(result.event_id)}</dd></div>
           </dl>
           <p className="help">{offline ? 'Synthetic metadata only. ' : ''}Vehicle condition has not been inspected.</p>
-          <p className="help">No licensed photos supplied</p>
+          <p className="help">{context?.mode === 'EXTERNAL' ? 'No source photos supplied' : 'No licensed photos supplied'}</p>
         </div>}
         {result.reasons.length > 0 && <div className="evidence-section"><h3>Resolution notes</h3><ul>{result.reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul></div>}
         {result.evidence.length > 0 && <div className="evidence-section"><h3>Match evidence</h3><ul>{result.evidence.map((item, index) => <li key={index}>{item}</li>)}</ul></div>}
@@ -246,7 +250,7 @@ export default function Resolver({ initialUrl = '' }: { initialUrl?: string }) {
             <div><dt>Source observed at</dt><dd><Time raw={result.freshness.source_observed_at} /></dd></div>
             <div><dt>Freshness assessment</dt><dd><Time raw={result.freshness.evaluated_at} /></dd></div>
           </dl>
-          <p className="help">A recent retrieval does not make an old record current. Licensed access does not imply live auction data.</p>
+          <p className="help">A recent retrieval does not make an old record current. {result.provider_context.authorization === 'UNVERIFIED' ? 'Source access and data freshness are not independently verified.' : 'Licensed access does not imply live auction data.'}</p>
         </section>}
         {(result.mapping_evidence || result.reference_evidence) && <details className="field-evidence identity-evidence">
           <summary>Identity verification details</summary>
@@ -266,6 +270,6 @@ export default function Resolver({ initialUrl = '' }: { initialUrl?: string }) {
         {result.warnings.length > 0 && <aside className="warnings" aria-label="Data limitations"><h3>Read before using this result</h3><ul>{result.warnings.map((warning, index) => <li key={index}>{warning}</li>)}</ul></aside>}
       </section>}
     </div>
-    <section className="scope-note"><p className="eyebrow">THE FIRST CHECK</p><p>This prototype checks listing identity and demonstrates an authored mock inspection workflow. It does not analyze actual vehicle photos, estimate repairs, or recommend a bid.</p></section>
+    <section className="scope-note"><p className="eyebrow">THE FIRST CHECK</p><p>Listing lookup checks the available identity evidence. Any authored inspection preview uses mock data; optional local photo analysis is experimental, and repair prices are not automatically verified.</p></section>
   </>;
 }

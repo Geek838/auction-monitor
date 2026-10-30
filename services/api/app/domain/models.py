@@ -24,7 +24,7 @@ class ProviderContext(BaseModel):
     id: str = "unknown"
     name: str = "Unconfigured provider"
     mode: Literal["FIXTURE", "SIMULATED", "EXTERNAL"] = "EXTERNAL"
-    authorization: Literal["NOT_REQUIRED", "APPROVED", "DENIED"] = "DENIED"
+    authorization: Literal["NOT_REQUIRED", "APPROVED", "UNVERIFIED", "DENIED"] = "DENIED"
     enabled: bool = False
     available: bool = False
     contract_version: str = "provider-contract-v1"
@@ -61,7 +61,7 @@ class Provenance(BaseModel):
     retrieved_at: AwareDatetime
     source_observed_at: AwareDatetime | None = None
     license_scope: str
-    data_type: Literal["MOCK", "SIMULATED", "LICENSED"]
+    data_type: Literal["MOCK", "SIMULATED", "LICENSED", "EXTERNAL_UNVERIFIED"]
     realtime: bool = False
 
 

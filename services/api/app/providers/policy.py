@@ -53,6 +53,7 @@ class ProviderPolicy(BaseModel):
     houses: set[AuctionHouse] = Field(default_factory=set)
     permissions: dict[Purpose, bool] = Field(default_factory=dict)
     authorization: AuthorizationEvidence | None = None
+    authorization_basis: str = "REVIEWED"
     required_credentials: list[str] = Field(default_factory=list)
     cache_ttl_seconds: int | None = Field(default=None, gt=0)
     max_retention_seconds: int | None = Field(default=None, gt=0)
@@ -63,6 +64,10 @@ class ProviderPolicy(BaseModel):
     def consistent_policy(self):
         if self.mode not in {"FIXTURE", "SIMULATED", "EXTERNAL"}:
             raise ValueError("Unknown provider mode.")
+        if self.authorization_basis not in {"REVIEWED", "USER_DECLARED"}:
+            raise ValueError("Unknown authorization basis.")
+        if self.authorization_basis == "USER_DECLARED" and self.mode != "EXTERNAL":
+            raise ValueError("User-declared use only applies to external providers.")
         if self.cache_ttl_seconds is not None:
             if not self.permissions.get(Purpose.METADATA_CACHE, False):
                 raise ValueError("A cache TTL requires explicit cache permission.")
@@ -100,10 +105,11 @@ class GuardedProvider:
         if policy.mode == "EXTERNAL":
             now = self.clock()
             evidence = policy.authorization
-            if evidence is None or evidence.revoked or purpose not in evidence.purposes:
-                raise NotAuthorized("Reviewed authorization for this use is absent or revoked.")
-            if evidence.reviewed_at > now or evidence.effective_at > now or (evidence.expires_at is not None and now >= evidence.expires_at):
-                raise NotAuthorized("Authorization is not currently valid.")
+            if policy.authorization_basis == "REVIEWED":
+                if evidence is None or evidence.revoked or purpose not in evidence.purposes:
+                    raise NotAuthorized("Reviewed authorization for this use is absent or revoked.")
+                if evidence.reviewed_at > now or evidence.effective_at > now or (evidence.expires_at is not None and now >= evidence.expires_at):
+                    raise NotAuthorized("Authorization is not currently valid.")
             if any(not self.credential_present(name) for name in policy.required_credentials):
                 raise NotAuthorized("Required provider credentials are unavailable.")
 
@@ -117,12 +123,14 @@ class GuardedProvider:
         authorized = not reasons
         return ProviderContext(
             id=self.policy.id, name=self.policy.name, mode=self.policy.mode,
-            authorization=("NOT_REQUIRED" if self.policy.mode != "EXTERNAL" else "APPROVED") if authorized else "DENIED",
+            authorization=("NOT_REQUIRED" if self.policy.mode != "EXTERNAL" else
+                           "UNVERIFIED" if self.policy.authorization_basis == "USER_DECLARED" else "APPROVED") if authorized else "DENIED",
             enabled=self.policy.enabled, available=authorized, reasons=reasons,
         )
 
     def validate_snapshot(self, snapshot: VehicleSnapshot) -> None:
-        expected_type = {"FIXTURE": "MOCK", "SIMULATED": "SIMULATED", "EXTERNAL": "LICENSED"}[self.policy.mode]
+        expected_type = {"FIXTURE": "MOCK", "SIMULATED": "SIMULATED", "EXTERNAL":
+                         "EXTERNAL_UNVERIFIED" if self.policy.authorization_basis == "USER_DECLARED" else "LICENSED"}[self.policy.mode]
         if snapshot.provenance.data_type != expected_type:
             raise SourceUnavailable("Provider returned data from a different mode; synthetic fallback is not permitted.")
         if snapshot.identity.house not in self.policy.houses:

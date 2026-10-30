@@ -6,7 +6,7 @@ export type ProviderContext = {
   id: string;
   name: string;
   mode: 'FIXTURE' | 'SIMULATED' | 'EXTERNAL';
-  authorization: 'NOT_REQUIRED' | 'APPROVED' | 'DENIED';
+  authorization: 'NOT_REQUIRED' | 'APPROVED' | 'UNVERIFIED' | 'DENIED';
   enabled: boolean;
   available: boolean;
   contract_version: string;
@@ -15,7 +15,7 @@ export type ProviderContext = {
 export type Provenance = {
   provider: string; source_name: string; source_url: string | null;
   retrieved_at: string; source_observed_at?: string | null;
-  license_scope: string; data_type: 'MOCK' | 'SIMULATED' | 'LICENSED'; realtime: boolean;
+  license_scope: string; data_type: 'MOCK' | 'SIMULATED' | 'LICENSED' | 'EXTERNAL_UNVERIFIED'; realtime: boolean;
 };
 export type EvidenceOrigin = { source: string; reference: string; channel: string; observed_at: string; kind: 'SUPPLIED' | 'OBSERVED' | 'INFERRED' | 'MISSING' };
 export type Freshness = {
@@ -48,7 +48,7 @@ export function readProviderContext(value: unknown): ProviderContext | null {
   const context = value as Partial<ProviderContext>;
   if (typeof context.id !== 'string' || typeof context.name !== 'string'
     || !['FIXTURE', 'SIMULATED', 'EXTERNAL'].includes(context.mode ?? '')
-    || !['NOT_REQUIRED', 'APPROVED', 'DENIED'].includes(context.authorization ?? '')
+    || !['NOT_REQUIRED', 'APPROVED', 'UNVERIFIED', 'DENIED'].includes(context.authorization ?? '')
     || typeof context.enabled !== 'boolean' || typeof context.available !== 'boolean'
     || typeof context.contract_version !== 'string' || !Array.isArray(context.reasons)
     || !context.reasons.every(reason => typeof reason === 'string')) return null;

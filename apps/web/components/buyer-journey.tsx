@@ -1,7 +1,7 @@
 import { workflowHref, workflowReference } from './workflow-reference';
 
 const steps = [
-  { path: '/', label: 'Listing identity', detail: 'Demo lookup until authorized live data is available.' },
+  { path: '/', label: 'Listing identity', detail: 'Check the configured source and listing reference.' },
   { path: '/review', label: 'Your evidence', detail: 'Record your details, photos and inspection questions.' },
   { path: '/local-inspection', label: 'Local photo analysis', detail: 'Optional experimental model; local setup required.' },
   { path: '/budget', label: 'Budget & bid planning', detail: 'Calculate from your dated quotes and assumptions.' },

@@ -56,6 +56,8 @@ def get_inspection_engine(catalog: Annotated[AssetCatalog, Depends(get_catalog)]
 async def health(provider: Annotated[AuctionSource, Depends(get_provider)]) -> dict:
     context = provider_context(provider)
     data_type = {"FIXTURE": "MOCK", "SIMULATED": "SIMULATED"}.get(context.mode, "UNAVAILABLE")
+    if context.mode == "EXTERNAL" and context.available and context.authorization == "UNVERIFIED":
+        data_type = "EXTERNAL_UNVERIFIED"
     return {"status": "ok", "provider": context.id.upper(), "data_type": data_type,
             "provider_context": context.model_dump(mode="json")}
 

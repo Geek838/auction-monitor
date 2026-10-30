@@ -2,13 +2,13 @@
 
 A local evidence and budget-planning application for buyers importing damaged vehicles into Georgia. Review your own photos and notes, optionally retrieve manufacturer details through the free official NHTSA VIN service, and calculate USD cost scenarios and a fee-aware planning bid ceiling from your entered sources. Optional local-model photo analysis uses installed weights rather than a paid AI API.
 
-**Identity, provenance and unknowns stay explicit.** The auction resolver still uses synthetic fixture/simulation data; no live auction website or licensed provider is queried. Manufacturer decoding is not an auction match. Budget inputs are user declarations, not verified Georgian prices or tax calculations. Local-model findings remain experimental and unreviewed. No paid API, subscription, account or key is required for these delivered workflows.
+**Identity, provenance and unknowns stay explicit.** The auction resolver defaults to synthetic fixtures; an optional Apibara metadata adapter requires a separately obtained key and explicit configuration. Manufacturer decoding is not an auction match. Budget inputs are user declarations, not verified Georgian prices or tax calculations. Local-model findings remain experimental and unreviewed. Fixture and manual workflows require no paid API, subscription, account or key.
 
 Manual-review photos stay in the browser. The separate local-analysis action explicitly sends prepared photo copies to your backend and its loopback Ollama service after permission. VIN lookup sends the entered VIN only to NHTSA after you click its lookup button. Existing fixtures, manual reports, manufacturer metadata and model output are kept separate.
 
 ## Run locally
 
-Prerequisites: Python 3.12+, Node.js 24 LTS, npm, and a Chromium browser for browser tests. No database, API keys, or Docker daemon is needed.
+Prerequisites: Python 3.12+, Node.js 24 LTS, npm, and a Chromium browser for browser tests. No database or Docker daemon is needed. Offline modes do not need an API key.
 
 **Windows PowerShell:** use the [native Windows commands](docs/windows-setup.md), which do not require `make` or virtualenv activation. The Makefile commands below are for Linux/macOS or an appropriate Unix shell. Windows CI is configured; native Windows execution has not been verified from this Linux development machine.
 
@@ -89,7 +89,7 @@ The review is held only in the current page; **Clear review** or refreshing clea
 
 No API subscription or token is required. Hosting, your own device resources and printing are separate operating costs. The [zero-API scope](docs/sprint-4-zero-api-scope.md), [delivery record](docs/sprint-4-delivery.md) and [executed test report](docs/sprint-4-test-report.md) record the delivered boundary and unresolved automatic lookup/AI work.
 
-## Provider modes (all offline)
+## Provider modes
 
 Set `AUCTION_PROVIDER` in the **API terminal** before starting/restarting the API. An environment file is not loaded automatically.
 
@@ -98,8 +98,19 @@ Set `AUCTION_PROVIDER` in the **API terminal** before starting/restarting the AP
 | `fixture` (default) | Hand-authored MOCK records; original fixture examples below. |
 | `simulation` | Hand-authored SIMULATED records for permission/evidence/freshness demonstrations; no commercial rights or live auction access implied. |
 | `bidcars` | Disabled external-provider placeholder. Resolution returns `NOT_AUTHORIZED` before any provider request. |
+| `apibara` | Optional external metadata adapter; requires `APIBARA_ENABLE=1` and `APIBARA_API_KEY`. Without both, the provider remains unavailable. |
 
 For example on Linux/macOS, stop your API, then run `AUCTION_PROVIDER=simulation make api`. In PowerShell, set `$env:AUCTION_PROVIDER = "simulation"` before the API command in the Windows guide. The UI obtains provider context from the API; no provider selector, API key, or policy override is accepted from the URL form. Unknown configuration fails at API startup. A service failure never silently falls back to synthetic matched data.
+
+To use the Apibara adapter, configure the **API terminal** and restart the API:
+
+```powershell
+$env:APIBARA_API_KEY = "YOUR_APIBARA_KEY"
+$env:APIBARA_ENABLE = "1"
+.\scripts\start-api.ps1 -Provider apibara
+```
+
+The key is sent to Apibara in a server-side request header; do not commit it or place it in browser code. The API does not automatically load `.env.example`. The provider advertises a free tier, but its plan, quota and any charges must be checked in the provider account; no paid access was configured here. The adapter uses Apibara's documented URL endpoint for Copart metadata. IAAI internal page IDs remain unresolved unless a reliable page-to-stock mapping is available. Returned metadata is a third-party observation, not proof of a live auction, condition or ownership. Auction photographs are not fetched or analyzed by this adapter. Tests use provider response doubles: no authenticated live Apibara lookup has been demonstrated in this environment.
 
 Structured policy checks guard provider operations. Image display/storage, inference, training, redistribution and caching remain separate permissions, denied by default. No persistent provider-data cache is implemented. Authorization and freshness are separate: licensed does not mean live, recent retrieval does not make an old snapshot fresh, and unknown source age remains unknown.
 
@@ -222,4 +233,4 @@ The [Sprint 1 test report](docs/sprint-1-test-report.md) records the original ba
 
 English is the prototype language; Georgian localization timing remains open. Production coverage, data/photo rights, provider contracts, persistence, retention, and freshness require separate decisions. Fixture tests verify resolution behavior and app integration, not live auction accuracy. The disabled Bid.Cars placeholder must remain disabled until authorized integration work is explicitly undertaken.
 
-Provider discovery: the [current research recommendation](docs/research/provider-selection-2026-10-22.md) and [reviewable commercial inquiry drafts](docs/research/provider-findings-2026-10-22.md) record verified public findings and unresolved access questions. No external provider is enabled.
+Provider discovery: the [Apibara feasibility review](docs/research/apibara-feasibility-2026-10-31.md) records the documented API, free-tier advertisement and unresolved identity, coverage and photo-use questions. The opt-in adapter uses metadata only; the fixture provider remains the default.

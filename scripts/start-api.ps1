@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [ValidateSet('fixture', 'simulation', 'bidcars')]
+    [ValidateSet('fixture', 'simulation', 'bidcars', 'apibara')]
     [string]$Provider = 'fixture',
     [ValidateRange(1, 65535)]
     [int]$Port = 8000,

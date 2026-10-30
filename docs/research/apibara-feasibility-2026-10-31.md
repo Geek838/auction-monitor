@@ -2,6 +2,8 @@
 
 This read-only review identifies a materially closer source for the original auction-URL flow. It does **not** establish a provider agreement or enable an integration. Ordinary public documentation and terms were retrieved; no auction record, API request, registration, provider message, purchase or image download was performed.
 
+**Implementation update:** An opt-in, metadata-only adapter was subsequently added at the user's direction. It requires `APIBARA_ENABLE=1` and an actual `APIBARA_API_KEY`; fixture mode remains the default. The adapter was exercised against controlled response doubles, not a real authenticated provider response. It does not fetch photographs. IAAI page identifiers remain unresolved without separately established page-to-stock mapping. The original research and provider terms below record the information available during the investigation and are not evidence of an agreement or free production entitlement.
+
 ## What the provider documents
 
 - [Product page](https://apibara.tech/en/products/vehicle-auction-data-api) and [homepage](https://apibara.tech/en) returned HTTP 200. They explicitly advertise Copart and IAAI normalized data, API-backed customer-facing applications and **100 recurring requests per month without a payment card**. The free quota is publicly advertised; plan entitlements and billing at account creation still need checking. The provider says production access uses subscription plans; free testing is not a promise of free production usage.
@@ -14,7 +16,7 @@ This read-only review identifies a materially closer source for the original auc
 
 Prioritize Apibara ahead of the earlier [MarketCheck lead](free-auction-provider-review-2026-10-30.md) for a free-tier, metadata-first feasibility evaluation: its **documented original-URL operation** and stated Copart/IAAI coverage directly match the user journey. Actual coverage, current event semantics, data accuracy, free production entitlement, downstream commercial-display rights and photo/inference rights remain unverified. Its data is not an official auction feed and must not be described as one.
 
-The existing provider guard should stay closed until the intended use is authorized with current evidence; no verified credential, signed permission, source response or live-match validation has been supplied. Do not invent an API key, accept terms on a client's behalf, scrape the public demo, derive private endpoints, or substitute a static result. If appropriately authorized, validate a narrow Copart and IAAI sample, preserve source/event identity and freshness, cross-check VIN when independent evidence is available, and report coverage and false matches separately. If independent page-to-stock evidence is absent, IAAI remains `UNRESOLVED_ID` under the current matching policy. Leave images and image inference disabled unless those distinct rights are established.
+No verified credential, signed permission, source response or live-match validation has been supplied. Do not invent an API key, accept terms on a client's behalf, scrape the public demo, derive private endpoints, or substitute a static result. Validate a narrow Copart and IAAI sample when a key is available, preserve source/event identity and freshness, cross-check VIN when independent evidence is available, and report coverage and false matches separately. If independent page-to-stock evidence is absent, IAAI remains `UNRESOLVED_ID` under the current matching policy. The adapter does not fetch or analyze provider photographs.
 
 ## Draft provider inquiry — unsent
 

@@ -15,6 +15,9 @@ export default function ProviderNotice({ context, loading }: { context: Provider
     if (context.authorization === 'DENIED' || !context.enabled) {
       label = 'ACCESS UNAVAILABLE';
       explanation = 'The selected external source is disabled or lacks authorized access. A failed lookup will not be replaced with mock data.';
+    } else if (context.authorization === 'UNVERIFIED') {
+      label = context.available ? 'EXTERNAL SOURCE' : 'SOURCE UNAVAILABLE';
+      explanation = 'An external provider is selected with user-declared access. Its data and usage rights are not independently verified. Check each result and its source date.';
     } else {
       label = context.available ? 'EXTERNAL SOURCE' : 'SOURCE UNAVAILABLE';
       explanation = 'An external provider is selected. Check each result’s provenance and source date; permitted access does not imply live auction data.';
@@ -24,7 +27,7 @@ export default function ProviderNotice({ context, loading }: { context: Provider
     <div className="mode-notice"><span className="tag">{label}</span><p>{explanation}</p></div>
     {context && <div className="provider-context">
       <p><span>Selected provider</span><strong>{context.name}</strong></p>
-      <p><span>Access status</span>{context.authorization === 'DENIED' ? 'Not authorized' : context.mode === 'FIXTURE' ? 'Local fixture access' : context.mode === 'SIMULATED' ? 'Synthetic offline access' : 'Permission reviewed; record availability varies'}</p>
+      <p><span>Access status</span>{context.authorization === 'DENIED' ? 'Not authorized' : context.mode === 'FIXTURE' ? 'Local fixture access' : context.mode === 'SIMULATED' ? 'Synthetic offline access' : context.authorization === 'UNVERIFIED' ? 'User-declared access; not independently verified' : 'Permission reviewed; record availability varies'}</p>
       {context.reasons.length > 0 && <ul>{context.reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul>}
     </div>}
   </div>;

@@ -36,7 +36,7 @@ export default async function Home({ searchParams }: WorkflowPageProps) {
             <a href="/georgia-excise" className="home-tool"><span className="home-tool-icon" aria-hidden="true">04</span><h3>Georgia excise</h3><p>Calculate the supported excise component for your vehicle.</p><span className="home-tool-link">Check excise →</span></a>
           </div>
         </section>
-        <section className="home-demo-heading"><p className="home-kicker">LISTING LOOKUP · DEMONSTRATION</p><h2>See how matching works.</h2><p>Live auction lookup is not available yet. Try a sample listing below to explore the identity checks.</p></section>
+        <section className="home-demo-heading"><p className="home-kicker">LISTING LOOKUP</p><h2>Check a listing.</h2><p>Paste a Copart or IAAI link. The source notice below shows whether this installation is using test data or an external provider.</p></section>
         <Resolver initialUrl={reference} />
         <section className="manual-home-link"><p className="eyebrow">HAVE YOUR OWN DETAILS AND PHOTOS?</p><a href="/review">Review your own evidence</a><p>Compile a manual review with your photos and notes. No paid API is needed; your entries remain unverified.</p></section>
       </main>

@@ -7,6 +7,7 @@ from app.providers.bidcars import BidCarsProvider
 from app.providers.fixture import FixtureProvider
 from app.providers.policy import GuardedProvider, ProviderPolicy, Purpose
 from app.providers.simulation import SimulationProvider
+from app.providers.apibara import ApibaraProvider
 
 
 def build_provider(name: str) -> GuardedProvider:
@@ -30,7 +31,15 @@ def build_provider(name: str) -> GuardedProvider:
         return GuardedProvider(BidCarsProvider(), ProviderPolicy(
             id="bidcars", name="Bid.Cars (not integrated)", mode="EXTERNAL", enabled=False,
         ))
-    raise ValueError("Unsupported AUCTION_PROVIDER. Choose fixture, simulation, or bidcars; no live provider is implemented.")
+    if name == "apibara":
+        return GuardedProvider(ApibaraProvider(), ProviderPolicy(
+            id="apibara", name="Apibara (third-party)", mode="EXTERNAL",
+            enabled=os.environ.get("APIBARA_ENABLE") == "1", authorization_basis="USER_DECLARED",
+            houses=set(AuctionHouse), capabilities={"canonical_lookup"},
+            permissions={Purpose.METADATA_LOOKUP: True, Purpose.METADATA_DISPLAY: True},
+            required_credentials=["APIBARA_API_KEY"],
+        ))
+    raise ValueError("Unsupported AUCTION_PROVIDER. Choose fixture, simulation, bidcars, or apibara.")
 
 
 @lru_cache(maxsize=3)

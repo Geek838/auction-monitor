@@ -43,7 +43,7 @@ Direct-command equivalents, also useful when script policy prevents running laun
 Terminal 1, repository root:
 
 ```powershell
-# Optional: fixture (default), simulation (offline), or bidcars (disabled).
+# Optional: fixture (default), simulation (offline), bidcars (disabled), or apibara.
 $env:AUCTION_PROVIDER = "fixture"
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --app-dir services/api --host 127.0.0.1 --port 8000 --reload
 ```
@@ -57,7 +57,17 @@ npm --prefix apps/web run dev
 
 Open port 3000 in your own computer's browser. Use the fixture examples in the README. Stop each server with Ctrl+C. Switching `AUCTION_PROVIDER` requires restarting the API; setting it in the web terminal does not reconfigure the API.
 
-`simulation` is also hand-authored offline data, with a SIMULATED label. `bidcars` demonstrates denied access and makes no remote request. No mode configures or enables a commercial integration.
+`simulation` is also hand-authored offline data, with a SIMULATED label. `bidcars` demonstrates denied access and makes no remote request.
+
+To configure the optional Apibara metadata adapter, stop the API and use the same API terminal:
+
+```powershell
+$env:APIBARA_API_KEY = "YOUR_APIBARA_KEY"
+$env:APIBARA_ENABLE = "1"
+.\scripts\start-api.ps1 -Provider apibara
+```
+
+An actual Apibara key is required and remains server-side; never commit it. Without a key and the enable flag, this mode makes no provider request. The provider advertises a free tier, but actual plan entitlements and any charges are determined by the provider. The documented URL endpoint and the adapter have not yet been tested together with a real key. Copart metadata is checked against the submitted source and lot; IAAI page IDs remain distinct from stock numbers and unresolved without a reliable mapping. No third-party photos are fetched or sent for analysis.
 
 ## Checks
 
