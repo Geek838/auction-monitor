@@ -1,5 +1,7 @@
 'use client';
 
+import BuyerJourney from './buyer-journey';
+
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { costCategories, readBudgetReport, type BudgetCost, type BudgetReport, type BudgetRequest, type CostCategory, type EvidenceKind, type FeeTier, type MoneyRange } from './budget-types';
 
@@ -13,7 +15,7 @@ function Range({ values, label }: { values: MoneyRange; label: string }) {
   return <div className="budget-range" aria-label={label}>{(['low', 'base', 'high'] as const).map(key => <div key={key}><dt>{key === 'base' ? 'Base' : key === 'low' ? 'Low' : 'High'}</dt><dd>{amount(values[key])}</dd></div>)}</div>;
 }
 
-export default function BudgetPlanner() {
+export default function BudgetPlanner({ reference = '' }: { reference?: string }) {
   const [hammer, setHammer] = useState('');
   const [categories, setCategories] = useState(emptyCategories);
   const [hasFees, setHasFees] = useState(false);
@@ -85,6 +87,8 @@ export default function BudgetPlanner() {
   const covered = costCategories.filter(category => categories[category.id].mode !== 'UNKNOWN').length;
 
   return <div className="budget-workspace">
+    <BuyerJourney current="/budget" reference={reference} />
+    {reference && <aside className="journey-reference"><strong>Listing reference</strong><p>{reference}</p><p>This reference is unverified. The budget below is a separate planning scenario; no vehicle facts or prices were transferred.</p></aside>}
     <aside className="budget-notice"><strong>User-supplied planning scenario</strong><p>Enter your own dated quotes or explicit assumptions in USD. Nothing is fetched or priced automatically. A complete calculation still depends on your evidence and is not a market-validated purchase recommendation.</p></aside>
     <form className="budget-form" onSubmit={submit} aria-busy={loading}>
       <section className="budget-section"><div className="budget-section-title"><span className="mono">01</span><h2>Your bid assumption</h2></div>{moneyInput('budget-hammer', 'Hammer bid (USD)', hammer, value => change(setHammer, value))}<p className="help">The assumed winning bid, before fees and other costs. Enter zero explicitly where appropriate; blank does not mean zero.</p></section>

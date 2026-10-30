@@ -2,6 +2,8 @@
 
 Reviewed **29 October 2026 (Asia/Tbilisi)** by the PO agent. Bounded, ordinary HTTPS reads only: no login, vehicle submission, calculator result, unpublished tax API, supplier contact or payment. This is source research, not a legal opinion, implemented tax engine or current quote for a particular car.
 
+**30 October update:** The team subsequently executed seven actual official RS calculator UI cases and read the relevant primary Georgian clauses. The [excise-component requirements and evidence](georgia-excise-component-requirements.md) supersede the earlier no-calculator/no-primary-language status **for that narrow supported component only**. Full duty/VAT/classification/exemption/service-fee and total-clearance support remains unvalidated; the budget still must not treat one excise amount as complete Georgia clearance.
+
 ## Retrieved sources
 
 | Official source | Access and relevant evidence |

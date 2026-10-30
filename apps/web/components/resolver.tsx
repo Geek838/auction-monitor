@@ -1,5 +1,7 @@
 'use client';
 
+import BuyerJourney from './buyer-journey';
+
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import ProviderNotice from './provider-notice';
 import InspectionPreview from './inspection-preview';
@@ -68,8 +70,8 @@ function resultBadge(result: Resolution) {
   return 'EXTERNAL SOURCE';
 }
 
-export default function Resolver() {
-  const [url, setUrl] = useState('');
+export default function Resolver({ initialUrl = '' }: { initialUrl?: string }) {
+  const [url, setUrl] = useState(initialUrl);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<Resolution | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -183,6 +185,7 @@ export default function Resolver() {
         </button>)}
       </div>}
     </section>
+    <BuyerJourney current="/" reference={url} />
 
     <div className="result-region" aria-live="polite" aria-atomic="true">
       {loading && <div className="processing" role="status"><span className="loading-dot" aria-hidden="true" />Checking the listing identity…</div>}

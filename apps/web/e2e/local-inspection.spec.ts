@@ -12,6 +12,7 @@ const hostileText = '<img src=x onerror="window.__localInjected=true">';
 
 async function selectPhoto(page: Page) {
   await page.getByLabel('Copart or IAAI listing URL', { exact: true }).fill(copart);
+  await expect(page.getByLabel('Photos for local analysis', { exact: true })).toBeEnabled();
   await page.getByLabel('Photos for local analysis', { exact: true }).setInputFiles({ name: 'private-local-image.png', mimeType: 'image/png', buffer: png });
   await expect(page.getByRole('img', { name: 'Image 1 — selected local evidence', exact: true })).toBeVisible();
 }

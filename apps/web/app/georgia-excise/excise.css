@@ -1,0 +1,14 @@
+.excise-notice { border-top: 1px solid var(--ink); padding-top: 20px; font-size: 14px; color: var(--muted); }
+.excise-form { padding: 22px 0 30px; border-bottom: 1px solid var(--rule); }
+.excise-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.excise-inputs select { width: 100%; min-height: 54px; background: #fffdf7; color: var(--ink); border: 1px solid #848a7a; border-radius: 0; padding: 12px; font: inherit; }
+.excise-scope { border: 0; border-top: 1px solid var(--rule); margin: 24px 0; padding: 20px 0 0; }
+.excise-scope legend { font-family: Georgia, serif; font-size: 24px; padding: 0 12px 0 0; }
+.excise-scope label { display: flex; align-items: flex-start; gap: 12px; font-weight: 400; line-height: 1.5; margin: 14px 0; }
+.excise-scope input[type='checkbox'] { width: 20px; height: 20px; padding: 0; flex-shrink: 0; margin-top: 2px; }
+.excise-result { padding: 28px 0 36px; }
+.excise-amount { font-family: Georgia, serif; font-size: clamp(30px, 7vw, 48px); color: var(--olive); overflow-wrap: anywhere; margin-bottom: 18px; }
+.excise-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 18px 0; margin-bottom: 18px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.excise-errors { padding: 20px 0; color: var(--rust); }
+.excise-unknowns { border-left: 2px solid var(--rust); padding-left: 16px; color: var(--rust); margin-top: 24px; }
+@media (max-width:640px) { .excise-inputs, .excise-facts { grid-template-columns:1fr; gap: 15px; } }

@@ -8,6 +8,8 @@ JSON_LIMITS = {path: MAX_JSON_BYTES for path in JSON_PATHS} | {
     "/api/v1/budgets/evaluate": 64 * 1024,
     "/api/v1/local-inspections": 9 * 1024 * 1024,
     "/api/v1/vehicles/decode-vin": 4 * 1024,
+    "/api/v1/exchange/convert": 4 * 1024,
+    "/api/v1/georgia/excise": 4 * 1024,
 }
 
 

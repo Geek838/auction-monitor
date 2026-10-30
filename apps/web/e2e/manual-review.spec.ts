@@ -11,6 +11,7 @@ const iaai = 'https://iaai.com:443/VehicleDetail/41000001~US';
 const mode = process.env.E2E_PROVIDER_MODE ?? 'fixture';
 
 async function addPhoto(page: Page) {
+  await expect(page.getByLabel('Choose vehicle photos', { exact: true })).toBeEnabled();
   await page.getByLabel('Choose vehicle photos', { exact: true }).setInputFiles({ name: 'private-original-name.png', mimeType: 'image/png', buffer: png });
   await expect(page.getByRole('img', { name: 'Photo 1 — local review evidence', exact: true }).first()).toBeVisible();
   await page.getByLabel('I have permission to use these photos for this local review.', { exact: true }).check();
@@ -145,6 +146,7 @@ test('a late report cannot appear under edited evidence', async ({ page }) => {
 });
 
 test('invalid image bytes cannot become local evidence', async ({ page }) => {
+  await expect(page.getByLabel('Choose vehicle photos', { exact: true })).toBeEnabled();
   await page.getByLabel('Choose vehicle photos', { exact: true }).setInputFiles({ name: 'not-a-photo.png', mimeType: 'image/png', buffer: Buffer.from('not a PNG') });
   await expect(page.getByRole('main').getByRole('alert')).toContainText(/valid.*PNG|PNG or JPEG/);
   await expect(page.getByRole('img', { name: 'Photo 1 — local review evidence', exact: true })).toHaveCount(0);
@@ -210,6 +212,7 @@ if (mode === 'fixture') {
     const jpeg = Buffer.from('/9j/4AAQSkZJRgABAQAAAQABAAD/4QBKRXhpZgAATU0AKgAAAAgAAgEOAAIAAAAbAAAAJgESAAMAAAABAAYAAAAAAABORVZFUl9VUExPQURfVEhJU19NRVRBREFUQQAA/9sAQwAIBgYHBgUIBwcHCQkICgwUDQwLCwwZEhMPFB0aHx4dGhwcICQuJyAiLCMcHCg3KSwwMTQ0NB8nOT04MjwuMzQy/9sAQwEJCQkMCwwYDQ0YMiEcITIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIy/8AAEQgAPABQAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8Aw6KKKyOUKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/Z', 'base64');
     expect(jpeg.includes(Buffer.from('NEVER_UPLOAD_THIS_METADATA'))).toBe(true);
     await prepare(page);
+    await expect(page.getByLabel('Choose vehicle photos', { exact: true })).toBeEnabled();
     await page.getByLabel('Choose vehicle photos', { exact: true }).setInputFiles({ name: 'private-jpeg.jpg', mimeType: 'image/jpeg', buffer: jpeg });
     const image = page.getByRole('img', { name: 'Photo 1 — local review evidence', exact: true }).first();
     await expect(image).toBeVisible();

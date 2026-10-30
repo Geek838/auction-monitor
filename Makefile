@@ -14,7 +14,7 @@ web:
 test: test-api test-web
 
 test-api:
-	.venv/bin/python -m pytest services/api/tests
+	.venv/bin/python scripts/check-api.py
 
 test-web:
 	npm --prefix apps/web run test:e2e

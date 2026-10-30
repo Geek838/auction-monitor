@@ -34,7 +34,7 @@ The API listens on port 8000 and Next.js on port 3000. `GET /api/v1/health` chec
 
 ## Available tools
 
-The home-page header links to **Review evidence**, **Plan budget** and **Local photo analysis**.
+The home-page header links to **Review evidence**, **Plan budget**, **Local photo analysis**, **Exchange rates** and **Georgia excise**. Each vehicle tool also shows the next steps. A supported listing URL can follow these links; photos, notes and budgets stay in their own page and must be exported before leaving.
 
 | Tool | Route | What works |
 | --- | --- | --- |
@@ -42,6 +42,8 @@ The home-page header links to **Review evidence**, **Plan budget** and **Local p
 | Free manufacturer lookup | In `/review`, below the VIN fields | Explicit NHTSA vPIC lookup and optional application of make/model/year; no auction or history verification |
 | Budget planner | `/budget` | Entered low/base/high costs, auction-fee bands, coverage/evidence gaps, indicative bid ceiling, export/print/reset |
 | Local photo analysis | `/local-inspection` | Optional installed-model experiment; disabled until local runtime/model are configured |
+| Official reference conversion | `/exchange` | Explicit USD/GEL conversion using the public NBG feed, with effective/publication/retrieval dates and failure/staleness handling |
+| Georgia excise component | `/georgia-excise` | Reviewed current-2026 ordinary-car excise only; explicit vehicle declarations, official sources and unsupported-case withholding |
 | Auction reference resolver | `/` | Existing clearly labelled synthetic identity and authored MOCK-preview demonstrations |
 
 ## Budget planning
@@ -51,6 +53,12 @@ Enter a hammer-bid assumption and your sourced cost ranges. Address every catego
 Auction fees can vary by bid. Enter contiguous bands from zero to an open-ended final band; each band's flat fee plus percentage applies to the **entire bid**, not just its marginal portion. Exclude the same fee from fixed broker costs to avoid double counting. No Copart/IAAI fee table or Georgian tax default is supplied.
 
 For a planning ceiling, also enter conservative market value, required savings and an additional risk reserve; zero must be intentional. The solver uses high costs and bid-dependent fees, testing whole cents. Missing required inputs withhold the ceiling. The result is indicative and based on user inputs, never an independently validated bid recommendation. Costs and results are USD-only; no exchange rate is guessed.
+
+For GEL display planning, open **Exchange rates**, enter an amount and request a conversion. Decimal arithmetic uses the official quoted quantity and rounds the final amount to cents. The NBG rate is indicative; bank spreads, fees and customs treatment are separate. Future-effective or more-than-four-calendar-day-old rates are withheld under the application's freshness policy. An unavailable source produces no fallback rate. Ordinary research reads succeeded, but the strict application connection has also received redirects/denials; a working conversion is not guaranteed. See [source requirements and evidence](docs/v1-next-requirements.md). The converter never changes your USD budget.
+
+The [offline vision evaluator](docs/vision-evaluation.md) accounts exact exported reports against human-reviewed image evidence. Its engineering self-tests do not establish automotive accuracy or certify a release.
+
+**Georgia excise** calculates one statutory GEL component for a restricted current-2026 subset, validated against seven actual official Revenue Service calculator cases and the primary Georgian Tax Code. It requires explicit production-year evidence, displacement in cm³ and supported eligibility facts. Unknown/hybrid/electric/right-steering/exempt/re-export cases are withheld. A future rule review is needed after the application's 31 December 2026 horizon. Import duty, VAT treatment, service charges and registration remain separate unknowns; this component never fills the USD clearance budget. See [supported rules and captured official evidence](docs/georgia-excise-component-requirements.md).
 
 Read the [calculator requirements](docs/v1-budget-requirements.md), [current official Georgian cost evidence](docs/georgia-cost-evidence.md), and [executed increment tests](docs/v1-increment-test-report.md). A researched statute is not a fully validated tax engine.
 

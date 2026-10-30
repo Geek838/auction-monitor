@@ -24,9 +24,13 @@ from app.local_vision.models import LocalInspectionRequest, LocalInspectionRepor
 from app.local_vision.service import create_local_inspection, get_local_vision_status
 from app.vin_lookup.models import VinDecodeRequest, VinDecodeReport
 from app.vin_lookup.service import decode_vin
+from app.exchange.models import ConversionRequest, ConversionReport
+from app.exchange.service import convert_currency
+from app.georgia_excise.models import ExciseRequest, ExciseReport
+from app.georgia_excise.service import calculate_excise
 
 logger = logging.getLogger(__name__)
-app = FastAPI(title="Auction Intelligence — evidence and budget planning", version="0.5.0")
+app = FastAPI(title="Auction Intelligence — evidence and budget planning", version="0.6.0")
 app.add_middleware(PreviewBodyLimit)
 # Fail startup on unsupported configuration; never silently switch into mock mode.
 get_selected_provider()
@@ -76,6 +80,20 @@ async def manufacturer_details(request: VinDecodeRequest, response: Response) ->
     response.headers["Cache-Control"] = "no-store, max-age=0"
     response.headers["X-Content-Type-Options"] = "nosniff"
     return await decode_vin(request)
+
+
+@app.post("/api/v1/exchange/convert", response_model=ConversionReport)
+async def exchange_conversion(request: ConversionRequest, response: Response) -> ConversionReport:
+    response.headers["Cache-Control"] = "no-store, max-age=0"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return await convert_currency(request)
+
+
+@app.post("/api/v1/georgia/excise", response_model=ExciseReport)
+def georgia_excise(request: ExciseRequest, response: Response) -> ExciseReport:
+    response.headers["Cache-Control"] = "no-store, max-age=0"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return calculate_excise(request)
 
 
 @app.get("/api/v1/local-vision/status", response_model=LocalVisionStatus)

@@ -1,5 +1,7 @@
 'use client';
 
+import BuyerJourney from '../../components/buyer-journey';
+
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { preparePhoto, type LocalPhoto } from '../../components/manual-review-photos';
 
@@ -77,15 +79,16 @@ async function pixels(photo: LocalPhoto) {
   });
 }
 
-export default function LocalInspection() {
+export default function LocalInspection({ initialUrl = '' }: { initialUrl?: string }) {
   const [runtime, setRuntime] = useState<RuntimeStatus | null>(null);
   const [checking, setChecking] = useState(true);
-  const [url, setUrl] = useState(''); const [permission, setPermission] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+  const [url, setUrl] = useState(initialUrl); const [permission, setPermission] = useState(false);
   const [photos, setPhotos] = useState<LocalPhoto[]>([]); const [preparing, setPreparing] = useState(false);
   const [loading, setLoading] = useState(false); const [error, setError] = useState<string | null>(null); const [report, setReport] = useState<Report | null>(null);
   const local = useRef<LocalPhoto[]>([]); const alive = useRef(true); const sequence = useRef(0); const preparation = useRef(0);
   const controller = useRef<AbortController | null>(null); const heading = useRef<HTMLHeadingElement | null>(null);
-  useEffect(() => { alive.current = true; return () => { alive.current = false; sequence.current++; preparation.current++; controller.current?.abort(); local.current.forEach(photo => URL.revokeObjectURL(photo.preview_url)); }; }, []);
+  useEffect(() => { alive.current = true; setHydrated(true); return () => { alive.current = false; sequence.current++; preparation.current++; controller.current?.abort(); local.current.forEach(photo => URL.revokeObjectURL(photo.preview_url)); }; }, []);
   async function refreshStatus(signal?: AbortSignal) {
     setChecking(true);
     try {
@@ -130,10 +133,11 @@ export default function LocalInspection() {
   }
   function download() { if (!report) return; const object = URL.createObjectURL(new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' })); const a = document.createElement('a'); a.href = object; a.download = 'auction-intelligence-local-analysis.json'; a.click(); setTimeout(() => URL.revokeObjectURL(object), 1000); }
   return <div className="lv-workspace">
+    <BuyerJourney current="/local-inspection" reference={url} />
     <section className="lv-status" aria-label="Local model availability"><div><strong>{checking ? 'Checking local model…' : runtime?.available ? 'Local vision model ready' : 'Local vision is not ready'}</strong><p>{runtime?.message ?? 'An installed local Ollama vision model is required.'}</p>{runtime?.model && <p className="mono">{runtime.model}</p>}</div><button type="button" className="inspection-button" disabled={checking} onClick={() => void refreshStatus()}>Check local model</button></section>
     <form className="lv-form" onSubmit={submit} aria-busy={loading || preparing}>
       <label htmlFor="local-url">Copart or IAAI listing URL</label><input id="local-url" type="url" required maxLength={2048} value={url} onChange={event => { invalidate(); setUrl(event.target.value); }} /><p className="help">The reference is parsed only. No provider match or auction-page fetch takes place.</p>
-      <label htmlFor="local-photos">Photos for local analysis</label><input id="local-photos" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" multiple disabled={preparing || loading} onChange={select} /><p className="help">Up to three PNG/JPEG originals, 8 MiB each. Prepared copies are resized and stripped of metadata. Selecting again replaces the photos.</p>
+      <label htmlFor="local-photos">Photos for local analysis</label><input id="local-photos" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" multiple disabled={!hydrated || preparing || loading} onChange={select} /><p className="help">Up to three PNG/JPEG originals, 8 MiB each. Prepared copies are resized and stripped of metadata. Selecting again replaces the photos.</p>
       {preparing && <p role="status">Preparing photos in this browser…</p>}
       <div className="lv-photos">{photos.map(photo => <figure key={photo.photo_id} id={`local-${photo.photo_id}`}><img src={photo.preview_url} width={photo.width} height={photo.height} alt={`${photo.label} — selected local evidence`} /><figcaption>{photo.label}</figcaption></figure>)}</div>
       <label className="lv-permission"><input type="checkbox" checked={permission} onChange={event => { invalidate(); setPermission(event.target.checked); }} />I have permission to process these photos with the local model.</label>

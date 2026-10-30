@@ -1,0 +1,143 @@
+{
+  "method": "Actual official calculator UI in Chromium; verified Node TLS via configured environment HTTPS proxy; only rs.ge hosts; no ignoreHTTPSerrors, no direct unpublished endpoints",
+  "url": "https://rs.ge/CarClearance-en",
+  "status": 200,
+  "date": "2026-10-30",
+  "results": [
+    {
+      "case": "conventional-2021",
+      "selectedManufactureYear": "2021",
+      "selectedEngineLiters": "2.0",
+      "controls": [
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "2026"
+        },
+        {
+          "value": "0.1",
+          "selected": "0.1"
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "2026"
+        }
+      ],
+      "text": "Vehicle\nMotorcycle\nUsed days \n \nManufacture Year\nEngine\n2021\n2.0\nCalculate\nTotal fee for the customs clearance\n3605 GEL\nExcise duty\n3000 GEL\nCustoms Tax\n125 GEL\nClearance of the vehicle\n150 GEL\nUsed days\nerror\nTake note: Vehicle clearance in MIA Service Agency are charged with the following service fees:\nClick to view fees\nFilling the customs declaration\n50 GEL\nExpert examination act\n30 GEL\nIssuance of an Internal Transit Number\n50 GEL\nRegistration certificate\n100 GEL\nVehicle Registration number\n80 GEL\nVehicle Inspection act\n20 GEL\nexclamation\nBefore using the calculator, make sure that your goods belong to the passenger vehicle category.\nexclamation\nIn accordance with Article 189 (Excise tax deductions) and Artcile 198 (Procedure for accrual and paying import duty) of the tax code of Georgia , importer is eligible to obtain 100% refund for the sum of paid exice and import duty, if vehicle is exported from the teritorry of Georgia in 180 days, after it was Released into Free Circulation (Import).\nexclamation\nVisit the informational page of Customs Law Violationif the timeframe for delivery/Submission/Genergal Declaring/Declaring of goods and means of transport is violated\n"
+    },
+    {
+      "case": "conventional-2020",
+      "selectedManufactureYear": "2020",
+      "selectedEngineLiters": "2.0",
+      "controls": [
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "2026"
+        },
+        {
+          "value": "0.1",
+          "selected": "0.1"
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "2026"
+        }
+      ],
+      "text": "Vehicle\nMotorcycle\nUsed days \n \nManufacture Year\nEngine\n2020\n2.0\nCalculate\nTotal fee for the customs clearance\n3610 GEL\nExcise duty\n3000 GEL\nCustoms Tax\n130 GEL\nClearance of the vehicle\n150 GEL\nUsed days\nerror\nTake note: Vehicle clearance in MIA Service Agency are charged with the following service fees:\nClick to view fees\nFilling the customs declaration\n50 GEL\nExpert examination act\n30 GEL\nIssuance of an Internal Transit Number\n50 GEL\nRegistration certificate\n100 GEL\nVehicle Registration number\n80 GEL\nVehicle Inspection act\n20 GEL\nexclamation\nBefore using the calculator, make sure that your goods belong to the passenger vehicle category.\nexclamation\nIn accordance with Article 189 (Excise tax deductions) and Artcile 198 (Procedure for accrual and paying import duty) of the tax code of Georgia , importer is eligible to obtain 100% refund for the sum of paid exice and import duty, if vehicle is exported from the teritorry of Georgia in 180 days, after it was Released into Free Circulation (Import).\nexclamation\nVisit the informational page of Customs Law Violationif the timeframe for delivery/Submission/Genergal Declaring/Declaring of goods and means of transport is violated\n"
+    },
+    {
+      "case": "conventional-2019",
+      "selectedManufactureYear": "2019",
+      "selectedEngineLiters": "2.0",
+      "controls": [
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "2026"
+        },
+        {
+          "value": "0.1",
+          "selected": "0.1"
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "2026"
+        }
+      ],
+      "text": "Vehicle\nMotorcycle\nUsed days \n \nManufacture Year\nEngine\n2019\n2.0\nCalculate\nTotal fee for the customs clearance\n9615 GEL\nExcise duty\n9000 GEL\nCustoms Tax\n135 GEL\nClearance of the vehicle\n150 GEL\nUsed days\nerror\nTake note: Vehicle clearance in MIA Service Agency are charged with the following service fees:\nClick to view fees\nFilling the customs declaration\n50 GEL\nExpert examination act\n30 GEL\nIssuance of an Internal Transit Number\n50 GEL\nRegistration certificate\n100 GEL\nVehicle Registration number\n80 GEL\nVehicle Inspection act\n20 GEL\nexclamation\nBefore using the calculator, make sure that your goods belong to the passenger vehicle category.\nexclamation\nIn accordance with Article 189 (Excise tax deductions) and Artcile 198 (Procedure for accrual and paying import duty) of the tax code of Georgia , importer is eligible to obtain 100% refund for the sum of paid exice and import duty, if vehicle is exported from the teritorry of Georgia in 180 days, after it was Released into Free Circulation (Import).\nexclamation\nVisit the informational page of Customs Law Violationif the timeframe for delivery/Submission/Genergal Declaring/Declaring of goods and means of transport is violated\n"
+    },
+    {
+      "case": "conventional-2026",
+      "selectedManufactureYear": "2026",
+      "selectedEngineLiters": "2.0",
+      "controls": [
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "2026"
+        },
+        {
+          "value": "0.1",
+          "selected": "0.1"
+        },
+        {
+          "value": "",
+          "selected": ""
+        },
+        {
+          "value": "2026",
+          "selected": "2026"
+        }
+      ],
+      "text": "Vehicle\nMotorcycle\nUsed days \n \nManufacture Year\nEngine\n2026\n2.0\nCalculate\nTotal fee for the customs clearance\n3585 GEL\nExcise duty\n3000 GEL\nCustoms Tax\n105 GEL\nClearance of the vehicle\n150 GEL\nUsed days\nerror\nTake note: Vehicle clearance in MIA Service Agency are charged with the following service fees:\nClick to view fees\nFilling the customs declaration\n50 GEL\nExpert examination act\n30 GEL\nIssuance of an Internal Transit Number\n50 GEL\nRegistration certificate\n100 GEL\nVehicle Registration number\n80 GEL\nVehicle Inspection act\n20 GEL\nexclamation\nBefore using the calculator, make sure that your goods belong to the passenger vehicle category.\nexclamation\nIn accordance with Article 189 (Excise tax deductions) and Artcile 198 (Procedure for accrual and paying import duty) of the tax code of Georgia , importer is eligible to obtain 100% refund for the sum of paid exice and import duty, if vehicle is exported from the teritorry of Georgia in 180 days, after it was Released into Free Circulation (Import).\nexclamation\nVisit the informational page of Customs Law Violationif the timeframe for delivery/Submission/Genergal Declaring/Declaring of goods and means of transport is violated\n"
+    }
+  ],
+  "errors": [],
+  "blockedThirdPartyHosts": [
+    {
+      "host": "fonts.googleapis.com",
+      "type": "stylesheet"
+    },
+    {
+      "host": "www.googletagmanager.com",
+      "type": "script"
+    },
+    {
+      "host": "fonts.googleapis.com",
+      "type": "stylesheet"
+    },
+    {
+      "host": "cdnjs.cloudflare.com",
+      "type": "stylesheet"
+    },
+    {
+      "host": "cdn.livecaller.io",
+      "type": "script"
+    }
+  ]
+}

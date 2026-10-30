@@ -1,5 +1,7 @@
 'use client';
 
+import BuyerJourney from './buyer-journey';
+
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import { FILE_LIMIT, PHOTO_LIMIT, TOTAL_LIMIT, preparePhoto, type LocalPhoto } from './manual-review-photos';
 import VinLookup from './vin-lookup';
@@ -8,8 +10,8 @@ import { readManualReview, type ManualReviewReport, type ManualReviewRequest, ty
 const emptyFinding = (): ReviewFinding => ({ classification: 'UNKNOWN', photo_id: null, component: '', description: '' });
 const classificationCopy = { OBSERVED: 'Observed by you', SUSPECTED: 'Suspected by you', UNKNOWN: 'Unknown / needs checking' };
 
-export default function ManualReview() {
-  const [url, setUrl] = useState('');
+export default function ManualReview({ initialUrl = '' }: { initialUrl?: string }) {
+  const [url, setUrl] = useState(initialUrl);
   const [vin, setVin] = useState('');
   const [year, setYear] = useState('');
   const [make, setMake] = useState('');
@@ -20,6 +22,7 @@ export default function ManualReview() {
   const [findings, setFindings] = useState<ReviewFinding[]>([]);
   const [permission, setPermission] = useState(false);
   const [preparing, setPreparing] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<ManualReviewReport | null>(null);
@@ -33,7 +36,7 @@ export default function ManualReview() {
   const iaai = /^https:\/\/(?:www\.|m\.)?iaai\.com(?::443)?(?:\/|$)/i.test(url.trim());
 
   useEffect(() => {
-    active.current = true;
+    active.current = true; setHydrated(true);
     return () => {
       active.current = false; generation.current++; preparation.current++; pending.current?.abort();
       photoState.current.forEach(photo => URL.revokeObjectURL(photo.preview_url));
@@ -133,6 +136,7 @@ export default function ManualReview() {
   }
 
   return <div className="manual-review-workspace">
+    <BuyerJourney current="/review" reference={url} />
     <aside className="manual-intro-note"><strong>Your evidence. Clearly attributed.</strong><p>Record your own details and findings, keep photo references together, and take a checklist to an independent inspector. No paid API or AI service is used.</p></aside>
     <form className="manual-review-form" onSubmit={submit} aria-busy={loading || preparing}>
       <section className="manual-section"><div className="manual-section-title"><span className="mono">01</span><h2>Identify your reference</h2></div>
@@ -148,7 +152,7 @@ export default function ManualReview() {
         <VinLookup vin={vin} onApply={details => { invalidate(); setVin(details.vin); if (details.year !== null) setYear(String(details.year)); if (details.make !== null) setMake(details.make); if (details.model !== null) setModel(details.model); }} />
       </section>
       <section className="manual-section"><div className="manual-section-title"><span className="mono">02</span><h2>Keep photos beside your notes</h2></div>
-        <label htmlFor="review-photos">Choose vehicle photos</label><input id="review-photos" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" multiple disabled={preparing} onChange={choosePhotos} />
+        <label htmlFor="review-photos">Choose vehicle photos</label><input id="review-photos" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" multiple disabled={!hydrated || preparing} onChange={choosePhotos} />
         <p className="help">Optional: up to six PNG/JPEG photos, 8 MiB each and 24 MiB total. Photos stay in this browser. Prepared copies are resized to 2048 pixels and original metadata is removed.</p>
         {preparing && <p role="status" className="help">Preparing local photo copies…</p>}
         {photos.length > 0 && <><div className="manual-photo-grid" aria-label="Selected local photos">{photos.map(photo => <figure key={photo.photo_id}>
