@@ -12,7 +12,7 @@ def main() -> int:
     if (repository / "tools/tests").is_dir():
         suites.append("tools/tests")
     command = [
-        sys.executable, "-m", "pytest", *suites,
+        sys.executable, "-m", "pytest", "-c", "services/api/pyproject.toml", *suites,
         "-vv", "--durations=10", "-o", "faulthandler_timeout=60",
         "--junitxml=.cache/qa/backend-results.xml",
     ]

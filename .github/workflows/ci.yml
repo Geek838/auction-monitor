@@ -96,6 +96,9 @@ jobs:
         timeout-minutes: 7
       - run: npm --prefix apps/web run typecheck
       - run: npm --prefix apps/web run build
+      - name: Smoke documented Windows launchers and production API proxy
+        run: .\.venv\Scripts\python.exe scripts/smoke-windows-launchers.py
+        timeout-minutes: 4
       - run: npm --prefix apps/web run test:e2e -- --workers=2
       - run: npm --prefix apps/web run test:e2e -- --workers=2
         env:
@@ -107,7 +110,9 @@ jobs:
         if: failure()
         with:
           name: windows-browser-failure-evidence
-          path: apps/web/test-results/
+          path: |
+            apps/web/test-results/
+            .cache/qa/windows-smoke-*.log
           retention-days: 7
       - uses: actions/upload-artifact@v4
         if: always()
