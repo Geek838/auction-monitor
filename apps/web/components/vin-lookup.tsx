@@ -6,7 +6,7 @@ export type ManufacturerDetails = { vin: string; year: number | null; make: stri
 type Decode = {
   schema_version: 'vin-decode-v1'; vin: string; outcome: 'DECODED' | 'PARTIAL' | 'UNAVAILABLE' | 'INVALID_VIN';
   source: 'NHTSA_VPIC'; source_url: string; retrieved_at: string; identity_status: 'NOT_AUCTION_VERIFIED';
-  vehicle: Omit<ManufacturerDetails, 'vin'>; errors: { code: string; description: string }[]; warnings: string[];
+  vehicle: Omit<ManufacturerDetails, 'vin'> & { body_class?: string | null; drive_type?: string | null; fuel_type?: string | null; engine_displacement_cc?: string | null }; errors: { code: string; description: string }[]; warnings: string[];
 };
 function record(value: unknown): value is Record<string, unknown> { return Boolean(value) && typeof value === 'object' && !Array.isArray(value); }
 function readDecode(value: unknown, vin: string): Decode | null {
@@ -19,6 +19,10 @@ function readDecode(value: unknown, vin: string): Decode | null {
   const vehicle = value.vehicle;
   if (vehicle.year !== null && (typeof vehicle.year !== 'number' || !Number.isInteger(vehicle.year) || vehicle.year < 1886 || vehicle.year > 2100)
     || vehicle.make !== null && typeof vehicle.make !== 'string' || vehicle.model !== null && typeof vehicle.model !== 'string') return null;
+  for (const key of ['body_class', 'drive_type', 'fuel_type', 'engine_displacement_cc']) {
+    const field = vehicle[key];
+    if (field !== undefined && field !== null && (typeof field !== 'string' || field.length > 200)) return null;
+  }
   if (['UNAVAILABLE', 'INVALID_VIN'].includes(String(value.outcome)) && Object.values(vehicle).some(item => item !== null)) return null;
   return value as Decode;
 }
@@ -67,6 +71,7 @@ export default function VinLookup({ vin, onApply }: { vin: string; onApply: (det
           if (!usable) return;
           onApply({ vin: current.vin, ...usable }); setApplied(true);
         }}>{applied ? 'Manufacturer details applied' : 'Use manufacturer details'}</button></>}
+        {['DECODED', 'PARTIAL'].includes(current.outcome) && [current.vehicle.body_class, current.vehicle.drive_type, current.vehicle.fuel_type, current.vehicle.engine_displacement_cc].some(Boolean) && <><h4>More manufacturer-reported details</h4><dl>{([['Body', current.vehicle.body_class], ['Drivetrain', current.vehicle.drive_type], ['Fuel', current.vehicle.fuel_type], ['Engine displacement (cm³)', current.vehicle.engine_displacement_cc]] as const).map(([label, detail]) => detail && <div key={label}><dt>{label}</dt><dd>{detail}</dd></div>)}</dl><p className="help">Manufacturer-reported specifications are unverified for this physical vehicle and are not applied to your review or tax calculation.</p></>}
         {outsideFormBounds && <p className="help">Some returned values exceed this review form’s supported bounds and will not be copied. Missing values leave your existing entries unchanged.</p>}
         {current.errors.length > 0 && <ul>{current.errors.map((item, index) => <li key={index}>{item.description}</li>)}</ul>}
         {current.warnings.length > 0 && <ul>{current.warnings.map((warning, index) => <li key={index}>{warning}</li>)}</ul>}

@@ -46,13 +46,16 @@ def _decode(request: VinDecodeRequest) -> VinDecodeReport:
         year_text = _text(row.get("ModelYear"))
         if year_text is not None and (not re.fullmatch(r"[0-9]{4}", year_text) or not 1886 <= int(year_text) <= datetime.now(timezone.utc).year + 2):
             raise VinSourceFailure("INVALID_RESPONSE", "Manufacturer metadata returned an unsupported model year.")
-        report.vehicle = DecodedVehicle(year=int(year_text) if year_text else None, make=make, model=model)
+        report.vehicle = DecodedVehicle(year=int(year_text) if year_text else None, make=make, model=model,
+            body_class=_text(row.get("BodyClass")), drive_type=_text(row.get("DriveType")),
+            fuel_type=_text(row.get("FuelTypePrimary")), engine_displacement_cc=_text(row.get("DisplacementCC")))
         error_text = row.get("ErrorText")
         if not isinstance(error_text, str) or len(error_text) > 3000:
             raise VinSourceFailure("INVALID_RESPONSE", "Manufacturer metadata returned an invalid error description.")
         report.errors = [DecodeError(code=code, description=error_text[:1200]) for code in codes if code != "0"]
         complete = make is not None and model is not None and report.vehicle.year is not None
-        report.outcome = "DECODED" if complete and codes == ["0"] else ("PARTIAL" if any((make, model, year_text)) or codes == ["0"] else "INVALID_VIN")
+        extra = (report.vehicle.body_class, report.vehicle.drive_type, report.vehicle.fuel_type, report.vehicle.engine_displacement_cc)
+        report.outcome = "DECODED" if complete and codes == ["0"] else ("PARTIAL" if any((make, model, year_text, *extra)) or codes == ["0"] else "INVALID_VIN")
         if report.outcome == "PARTIAL":
             report.warnings.append("The source returned incomplete facts or decode errors. Review its errors before applying any details.")
         return report

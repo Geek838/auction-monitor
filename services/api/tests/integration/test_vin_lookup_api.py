@@ -39,7 +39,7 @@ def test_manufacturer_facts_are_decoded_from_the_free_source_without_becoming_an
     assert report['vin'] == VIN and report['outcome'] == 'DECODED'
     assert report['source'] == 'NHTSA_VPIC'
     assert report['identity_status'] == 'NOT_AUCTION_VERIFIED'
-    assert report['vehicle'] == {'year': 2003, 'make': 'HONDA', 'model': 'Accord'}
+    assert report['vehicle'] == {'year': 2003, 'make': 'HONDA', 'model': 'Accord', 'body_class': None, 'drive_type': None, 'fuel_type': None, 'engine_displacement_cc': None}
     assert report['source_url'].startswith('https://vpic.nhtsa.dot.gov/')
     assert report['retrieved_at'] and report['warnings']
     assert 'MATCHED' not in report.values() and 'auction_house' not in report and 'record_id' not in report
@@ -82,7 +82,7 @@ def test_source_invalid_vin_response_with_no_useful_fields_remains_invalid(clien
     assert response.status_code == 200
     report = response.json()
     assert report['outcome'] == 'INVALID_VIN'
-    assert report['vehicle'] == {'year': None, 'make': None, 'model': None}
+    assert report['vehicle'] == {'year': None, 'make': None, 'model': None, 'body_class': None, 'drive_type': None, 'fuel_type': None, 'engine_displacement_cc': None}
     assert report['errors']
 
 
@@ -100,7 +100,7 @@ def test_mismatched_or_malformed_source_rows_do_not_enrich_a_different_vehicle(c
     assert response.status_code == 200
     report = response.json()
     assert report['outcome'] == 'UNAVAILABLE'
-    assert report['vehicle'] == {'year': None, 'make': None, 'model': None}
+    assert report['vehicle'] == {'year': None, 'make': None, 'model': None, 'body_class': None, 'drive_type': None, 'fuel_type': None, 'engine_displacement_cc': None}
     assert report['identity_status'] == 'NOT_AUCTION_VERIFIED'
 
 
@@ -113,7 +113,7 @@ def test_source_failure_is_sanitized_and_does_not_apply_manufacturing_facts(clie
     assert response.status_code == 200
     report = response.json()
     assert report['outcome'] == 'UNAVAILABLE'
-    assert report['vehicle'] == {'year': None, 'make': None, 'model': None}
+    assert report['vehicle'] == {'year': None, 'make': None, 'model': None, 'body_class': None, 'drive_type': None, 'fuel_type': None, 'engine_displacement_cc': None}
     assert report['errors'][0]['code'] == 'SOURCE_UNAVAILABLE'
 
 
@@ -133,5 +133,26 @@ def test_missing_source_facts_with_clean_decode_code_does_not_prove_a_vin_invali
     assert response.status_code == 200
     report = response.json()
     assert report['outcome'] == 'PARTIAL'
-    assert report['vehicle'] == {'year': None, 'make': None, 'model': None}
+    assert report['vehicle'] == {'year': None, 'make': None, 'model': None, 'body_class': None, 'drive_type': None, 'fuel_type': None, 'engine_displacement_cc': None}
     assert report['identity_status'] == 'NOT_AUCTION_VERIFIED'
+
+
+def test_extra_manufacturer_specifications_are_reported_without_verifying_vehicle_or_tax(client, monkeypatch):
+    row = source_row()
+    row.update(BodyClass='Sedan/Saloon', DriveType='FWD', FuelTypePrimary='Gasoline', DisplacementCC='2400.0')
+    source_double(monkeypatch, row=row)
+    report = client.post('/api/v1/vehicles/decode-vin', json={'vin': VIN}).json()
+    assert report['vehicle']['body_class'] == 'Sedan/Saloon'
+    assert report['vehicle']['drive_type'] == 'FWD'
+    assert report['vehicle']['fuel_type'] == 'Gasoline'
+    assert report['vehicle']['engine_displacement_cc'] == '2400.0'
+    assert report['identity_status'] == 'NOT_AUCTION_VERIFIED'
+
+
+def test_specs_without_basic_vehicle_fields_are_partial_not_invalid(client, monkeypatch):
+    row = source_row()
+    row.update(Make='', Model='', ModelYear='', ErrorCode='1', BodyClass='Sedan/Saloon')
+    source_double(monkeypatch, row=row)
+    report = client.post('/api/v1/vehicles/decode-vin', json={'vin': VIN}).json()
+    assert report['outcome'] == 'PARTIAL'
+    assert report['vehicle']['body_class'] == 'Sedan/Saloon'

@@ -382,3 +382,25 @@ li { font-size: 13px; margin-bottom: 7px; }
 .journey-reference p { margin: 7px 0; color: var(--muted); }
 @media (max-width: 700px) { .buyer-journey ol { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 15px; } }
 @media print { .buyer-journey { display: none !important; } }
+
+/* Shared workspace surfaces, controls and navigation. */
+:root { --paper:#f7f8f3; --ink:#172b30; --olive:#285d4e; --rust:#a85432; --rule:#d9e1d9; --muted:#607269; }
+body { font-family:Arial,Helvetica,sans-serif; color:var(--ink); }
+.masthead { border-bottom-color:var(--rule); }
+.masthead nav a { text-decoration:none; font-weight:600; }
+.masthead nav a:hover { text-decoration:underline; }
+h1,h2,.vehicle-block h3,.empty-state h2 { font-family:Arial,Helvetica,sans-serif; font-weight:600; }
+h1 { letter-spacing:-2.8px; }
+h1 em { font-style:normal; }
+input, .manual-review-form select, .manual-review-form textarea, .budget-form select { border-color:#b9c8bc; border-radius:7px; background:#fff; }
+.submit-button { background:#173b36; border-color:#173b36; border-radius:7px; min-height:50px; }
+.submit-button:hover { background:#285d4e; }
+.inspection-button { border-radius:7px; }
+.buyer-journey { background:#edf3ed; border:1px solid #dae7dc; border-radius:12px; padding:22px; }
+.buyer-journey li a { font:700 14px/1.3 Arial,sans-serif; text-decoration:none; }
+.buyer-journey li a:hover { text-decoration:underline; }
+.buyer-journey li a[aria-current] { color:#172b30; }
+.manual-intro-note,.budget-notice { border-top:0; border-left:3px solid #80a991; background:#edf4ed; border-radius:0 8px 8px 0; padding:18px 20px; margin-bottom:20px; }
+.manual-intro-note > strong,.budget-notice > strong { font:700 18px/1.3 Arial,sans-serif; }
+.manual-section-title h2,.budget-section-title h2,.manual-report-section > h3,.budget-result-section > h3,.budget-category-heading h3,.vin-lookup-heading h3 { font-family:Arial,sans-serif; font-weight:600; letter-spacing:-.5px; }
+@media print { .manual-intro-note,.budget-notice { display:none; } }

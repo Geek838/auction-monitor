@@ -21,6 +21,10 @@ class DecodedVehicle(Contract):
     year: int | None = None
     make: str | None = None
     model: str | None = None
+    body_class: str | None = None
+    drive_type: str | None = None
+    fuel_type: str | None = None
+    engine_displacement_cc: str | None = None
 
 
 class DecodeError(Contract):

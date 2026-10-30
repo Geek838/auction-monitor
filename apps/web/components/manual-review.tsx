@@ -136,10 +136,9 @@ export default function ManualReview({ initialUrl = '' }: { initialUrl?: string 
   }
 
   return <div className="manual-review-workspace">
-    <BuyerJourney current="/review" reference={url} />
-    <aside className="manual-intro-note"><strong>Your evidence. Clearly attributed.</strong><p>Record your own details and findings, keep photo references together, and take a checklist to an independent inspector. No paid API or AI service is used.</p></aside>
+    <aside className="manual-intro-note"><strong>Your information stays yours.</strong><p>This review is built from what you enter. Photos stay in this browser; vehicle identity and condition are not verified.</p></aside>
     <form className="manual-review-form" onSubmit={submit} aria-busy={loading || preparing}>
-      <section className="manual-section"><div className="manual-section-title"><span className="mono">01</span><h2>Identify your reference</h2></div>
+      <section className="manual-section"><div className="manual-section-title"><span className="mono">01</span><h2>Start with the listing</h2></div>
         <label htmlFor="review-url">Copart or IAAI listing URL</label><input id="review-url" type="url" required maxLength={2048} value={url} onChange={event => change(setUrl, event.target.value)} placeholder="https://www.copart.com/lot/51374586" />
         <p className="help">The URL is parsed, never fetched. Details you enter remain unverified.</p>
         <div className="manual-fields">
@@ -151,7 +150,7 @@ export default function ManualReview({ initialUrl = '' }: { initialUrl?: string 
         </div>
         <VinLookup vin={vin} onApply={details => { invalidate(); setVin(details.vin); if (details.year !== null) setYear(String(details.year)); if (details.make !== null) setMake(details.make); if (details.model !== null) setModel(details.model); }} />
       </section>
-      <section className="manual-section"><div className="manual-section-title"><span className="mono">02</span><h2>Keep photos beside your notes</h2></div>
+      <section className="manual-section"><div className="manual-section-title"><span className="mono">02</span><h2>Add your photos</h2></div>
         <label htmlFor="review-photos">Choose vehicle photos</label><input id="review-photos" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" multiple disabled={!hydrated || preparing} onChange={choosePhotos} />
         <p className="help">Optional: up to six PNG/JPEG photos, 8 MiB each and 24 MiB total. Photos stay in this browser. Prepared copies are resized to 2048 pixels and original metadata is removed.</p>
         {preparing && <p role="status" className="help">Preparing local photo copies…</p>}
@@ -191,5 +190,6 @@ export default function ManualReview({ initialUrl = '' }: { initialUrl?: string 
       <aside className="warnings" aria-label="Manual review limitations"><h3>Review limitations</h3><ul>{report.warnings.map((warning, index) => <li key={index}>{warning}</li>)}</ul></aside>
       <div className="manual-report-actions"><button type="button" className="inspection-button" onClick={download}>Download review JSON</button><button type="button" className="inspection-button" onClick={() => window.print()}>Print review</button><p className="help">JSON contains the report and photo metadata; image files are not included. Printing can include the browser-local photos.</p></div>
     </section>}
+    <BuyerJourney current="/review" reference={url} />
   </div>;
 }

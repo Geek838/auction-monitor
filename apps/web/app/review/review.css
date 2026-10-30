@@ -1,0 +1,25 @@
+.manual-review-page { max-width: 1180px; }
+.manual-review-page .masthead { border-color: #dce2df; }
+.review-intro { padding: 48px 0 32px; max-width: 920px; }
+.review-intro .eyebrow { color: #537563; }
+.review-intro h1 { font-family: Georgia, serif; font-size: clamp(2.6rem, 5vw, 4.4rem); line-height: 1.05; letter-spacing: -.045em; margin: 14px 0 18px; color: #152c24; }
+.review-intro > p:not(.eyebrow) { font-size: 17px; line-height: 1.6; color: #52645a; max-width: 610px; margin: 0; }
+.review-intro-steps { display: flex; flex-wrap: wrap; gap: 12px 26px; margin-top: 28px; font-size: 13px; color: #40554b; }
+.review-intro-steps span { display: flex; align-items: center; gap: 8px; }
+.review-intro-steps b { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: #dcebe2; color: #214c37; font-size: 11px; }
+.manual-review-workspace { max-width: 920px; }
+.manual-review-page .manual-intro-note { max-width: none; background: #eaf3ed; border: 1px solid #cbded1; border-radius: 12px; padding: 16px 20px; margin-bottom: 18px; }
+.manual-review-page .manual-intro-note > strong { font: 600 14px/1.4 Arial, sans-serif; color: #214c37; }
+.manual-review-page .manual-intro-note > p { margin-top: 4px; font-size: 13px; line-height: 1.5; }
+.manual-review-page .manual-review-form { display: grid; gap: 14px; }
+.manual-review-page .manual-section { background: #fff; border: 1px solid #dce5df; border-radius: 14px; padding: 26px; box-shadow: 0 4px 20px rgba(23, 49, 35, .04); }
+.manual-review-page .manual-section-title { align-items: center; gap: 13px; margin-bottom: 22px; }
+.manual-review-page .manual-section-title > span { display: grid; place-items: center; flex: 0 0 32px; height: 32px; border-radius: 9px; background: #e6f0e9; color: #28573d; font-weight: 700; }
+.manual-review-page .manual-section-title h2 { font-size: 25px; color: #1c3529; }
+.manual-review-page .manual-section input:not([type=checkbox]), .manual-review-page .manual-section select, .manual-review-page .manual-section textarea { border-radius: 7px; border-color: #bfcfc5; background: #fff; }
+.manual-review-page .manual-section input:focus-visible, .manual-review-page .manual-section select:focus-visible, .manual-review-page .manual-section textarea:focus-visible { outline: 3px solid #aacbb7; outline-offset: 2px; }
+.manual-review-page .manual-submit { padding: 12px 4px 20px; }
+.manual-review-page .manual-submit .submit-button { border-radius: 8px; }
+.manual-review-page .buyer-journey { margin-top: 40px; }
+@media (max-width: 600px) { .review-intro { padding: 32px 0 24px; } .review-intro h1 { font-size: 2.6rem; } .review-intro-steps { gap: 10px 16px; } .manual-review-page .manual-section { padding: 20px 16px; } .manual-review-page .manual-section-title h2 { font-size: 22px; } }
+@media print { .review-intro, .manual-review-page .buyer-journey { display: none !important; } }
