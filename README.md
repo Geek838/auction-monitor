@@ -12,6 +12,8 @@ Prerequisites: Python 3.12+, Node.js 24 LTS, npm, and a Chromium browser for bro
 
 **Windows PowerShell:** use the [native Windows commands](docs/windows-setup.md), which do not require `make` or virtualenv activation. The Makefile commands below are for Linux/macOS or an appropriate Unix shell. Windows CI is configured; native Windows execution has not been verified from this Linux development machine.
 
+PowerShell shortcuts from the repository root are `.\scripts\setup.ps1`, then `.\scripts\start-api.ps1` and `.\scripts\start-web.ps1` in separate terminals. Setup refreshes the pinned dependencies and checks Pillow. Direct-command equivalents are available if local script policy blocks `.ps1` files. See the [operational release checklist](docs/release-operations.md) for clean-checkout verification and the limits of configured versus observed CI evidence.
+
 From the repository root:
 
 ```sh

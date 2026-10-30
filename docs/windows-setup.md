@@ -6,6 +6,16 @@ These are native PowerShell instructions. The current development machine is Lin
 
 ## Install
 
+From the repository root, the setup script installs both sets of pinned dependencies and verifies that the image decoder is importable:
+
+```powershell
+.\scripts\setup.ps1
+```
+
+Use `-InstallBrowser` to also install Chromium for browser tests. If Python 3.12+ is already available under a different executable, use `.\scripts\setup.ps1 -PythonCommand python`. The script reuses an existing Windows virtual environment; if that environment uses an unsupported Python version, recreate it intentionally before setup. It does not change execution policy, activate the virtual environment, install Python/Node, or download an AI model.
+
+If local policy blocks `.ps1` files, use the equivalent commands below; no execution-policy change is needed:
+
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r services/api/requirements.txt
@@ -15,6 +25,20 @@ npm --prefix apps/web ci
 If `py -3.12` is unavailable, install Python 3.12 with its launcher. If Python 3.12 is already your `python`, `python -m venv .venv` is equivalent. If npm is installed but PowerShell blocks `npm.ps1`, use `npm.cmd` in these commands.
 
 ## Run (two terminals)
+
+The launcher scripts can be invoked from any working directory, using their actual path. They bind development servers to your computer's loopback interface. Run each in its own terminal:
+
+```powershell
+.\scripts\start-api.ps1
+```
+
+```powershell
+.\scripts\start-web.ps1
+```
+
+Use `start-api.ps1 -Provider simulation` for the offline simulation mode, or `-Port 8001` for a different API port. When changing the API port, set `$env:API_BASE_URL = "http://127.0.0.1:8001"` in the web terminal before starting it. The scripts preserve other existing process variables, including optional local vision configuration. Use `start-web.ps1 -Production` only after a successful frontend build. Ctrl+C stops the foreground server.
+
+Direct-command equivalents, also useful when script policy prevents running launchers:
 
 Terminal 1, repository root:
 
@@ -94,3 +118,5 @@ After pulling this development increment, use the same backend and frontend star
 - Local photo analysis needs additional installed model software/weights, memory and compute. It is optional and disabled by default. Follow [local vision setup](local-vision.md) for separate Ollama/API process variables; do not assume setting a variable installs or starts a model.
 
 Native Windows execution and hosted CI remain unobserved in the Linux workspace; see the current increment test report for what actually ran.
+
+For a release candidate, use the [operational checklist](release-operations.md). A configured Windows CI job is not evidence of a passing hosted run.

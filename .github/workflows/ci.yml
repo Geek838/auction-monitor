@@ -1,4 +1,4 @@
-name: Resolver checks
+name: Application checks
 
 on:
   push:
@@ -7,12 +7,19 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   resolver:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       NEXT_TELEMETRY_DISABLED: '1'
+      # Match make install's workspace cache instead of caching an unused home directory.
+      PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip
+      npm_config_cache: ${{ github.workspace }}/.cache/npm
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,16 +33,18 @@ jobs:
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
       - run: make install
-      - run: make test-api
+      - run: .venv/bin/python scripts/check-api.py
+        timeout-minutes: 7
+      - run: .venv/bin/python -m pip check
       - run: make check
       - run: make build
       - run: npx playwright install --with-deps chromium
         working-directory: apps/web
-      - run: make test-web
-      - run: make test-web
+      - run: npm --prefix apps/web run test:e2e -- --workers=2
+      - run: npm --prefix apps/web run test:e2e -- --workers=2
         env:
           E2E_PROVIDER_MODE: simulation
-      - run: make test-web
+      - run: npm --prefix apps/web run test:e2e -- --workers=2
         env:
           E2E_PROVIDER_MODE: bidcars
       - uses: actions/upload-artifact@v4
@@ -44,12 +53,21 @@ jobs:
           name: browser-failure-evidence
           path: apps/web/test-results/
           retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: linux-backend-results
+          path: .cache/qa/backend-results.xml
+          if-no-files-found: ignore
+          retention-days: 7
 
   windows-resolver:
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 35
     env:
       NEXT_TELEMETRY_DISABLED: '1'
+      PIP_CACHE_DIR: ${{ github.workspace }}/.cache/pip
+      npm_config_cache: ${{ github.workspace }}/.cache/npm
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -62,14 +80,22 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: apps/web/package-lock.json
-      - run: python -m venv .venv
-      - run: .\.venv\Scripts\python.exe -m pip install -r services/api/requirements.txt
-      - run: npm --prefix apps/web ci
-      - run: .\.venv\Scripts\python.exe -m pytest services/api/tests
+      - name: Validate PowerShell launcher syntax
+        shell: powershell
+        run: |
+          Get-ChildItem scripts/*.ps1 | ForEach-Object {
+            $tokens = $null
+            $parseErrors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$parseErrors) | Out-Null
+            if ($parseErrors) { throw ($parseErrors | Out-String) }
+          }
+      - name: Set up through the documented Windows entry point
+        shell: powershell
+        run: .\scripts\setup.ps1 -PythonCommand python -InstallBrowser
+      - run: .\.venv\Scripts\python.exe scripts/check-api.py
+        timeout-minutes: 7
       - run: npm --prefix apps/web run typecheck
       - run: npm --prefix apps/web run build
-      - run: npx playwright install chromium
-        working-directory: apps/web
       - run: npm --prefix apps/web run test:e2e -- --workers=2
       - run: npm --prefix apps/web run test:e2e -- --workers=2
         env:
@@ -82,4 +108,11 @@ jobs:
         with:
           name: windows-browser-failure-evidence
           path: apps/web/test-results/
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-backend-results
+          path: .cache/qa/backend-results.xml
+          if-no-files-found: ignore
           retention-days: 7
