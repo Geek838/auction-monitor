@@ -1,4 +1,5 @@
 """Strict contracts for private, unverified local photo analysis."""
+import re
 from typing import Literal
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
@@ -9,6 +10,14 @@ from app.manual_reviews.models import PhysicalCheck, reject_known_safety_asserti
 MAX_IMAGE_BYTES = 2 * 1024 * 1024
 MAX_TOTAL_BYTES = 6 * 1024 * 1024
 MAX_BASE64_LENGTH = 4 * ((MAX_IMAGE_BYTES + 2) // 3)
+
+
+def reject_local_unsupported_wording(wording: str) -> None:
+    reject_known_safety_assertions(wording)
+    # Narrow guard for unsafe language actually observed from a local model.
+    # This does not prove that all unsafe advice is detected.
+    if re.search(r"\bno (?:further |additional )?inspection (?:is )?(?:required|needed|necessary)\b", wording, re.IGNORECASE):
+        raise ValueError("Unqualified claims that inspection is unnecessary are not accepted.")
 
 
 class Contract(BaseModel):
@@ -52,8 +61,8 @@ class LocalFinding(Contract):
             raise ValueError("Finding image references must be distinct.")
         if self.classification in {"OBSERVED", "SUSPECTED"} and not self.image_ids:
             raise ValueError("Observations and suspicions require image evidence.")
-        reject_known_safety_assertions(" ".join((self.component, self.region, self.description,
-                                                self.rationale, self.confirmation)))
+        wording = " ".join((self.component, self.region, self.description, self.rationale, self.confirmation))
+        reject_local_unsupported_wording(wording)
         return self
 
 
@@ -66,7 +75,7 @@ class ModelOutput(Contract):
         for text in self.limitations:
             if not text.strip() or len(text) > 600:
                 raise ValueError("Model limitations must be nonblank and bounded.")
-            reject_known_safety_assertions(text)
+            reject_local_unsupported_wording(text)
         return self
 
 

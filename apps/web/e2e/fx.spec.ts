@@ -6,7 +6,7 @@ const mode = process.env.E2E_PROVIDER_MODE ?? 'fixture';
 const sourceUrl = 'https://nbg.gov.ge/gw/api/ct/monetarypolicy/currencies/en/json';
 type Input = { amount: string; from_currency: string; to_currency: string };
 function converted(request: Input) {
-  return { schema_version: 'exchange-v1', source: 'NATIONAL_BANK_OF_GEORGIA', source_url: sourceUrl, outcome: 'CONVERTED', request,
+  return { schema_version: 'exchange-v1', source: 'NATIONAL_BANK_OF_GEORGIA', source_url: sourceUrl, source_request_date: '2026-10-30', outcome: 'CONVERTED', request,
     converted_amount: request.from_currency === 'USD' ? '259.59' : '38.52',
     quote: { currency: 'USD', quantity: 1, rate_gel: '2.5959', gel_per_usd: '2.5959', effective_date: '2026-10-30', published_at: '2026-10-29T17:01:14.556Z', age_days: 0, freshness: 'EFFECTIVE_TODAY' },
     retrieved_at: '2026-10-30T10:00:00Z', rounding: 'ROUND_HALF_UP_2_DECIMAL_PLACES', max_age_days: 4, errors: [], warnings: ['Controlled browser response fixture; no live NBG request.'] };
@@ -27,6 +27,7 @@ if (mode === 'fixture') {
     expect(requests).toEqual([{ amount: '100.00', from_currency: 'USD', to_currency: 'GEL' }]);
     await expect(page.getByText('259.59 GEL', { exact: true })).toBeVisible();
     await expect(page.getByText('2026-10-30', { exact: true })).toBeVisible();
+    await expect(page.getByText('Rate requested for 2026-10-30 (Georgia calendar).', { exact: false })).toBeVisible();
     await expect(page.getByRole('region', { name: 'Reference conversion result', exact: true }).locator('dl > div').filter({ has: page.locator('dt').filter({ hasText: /^Official unit rate$/ }) }).locator('dd')).toHaveText('1 USD = 2.5959 GEL');
     await expect(page.getByText('Budget totals are never changed automatically.', { exact: false })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

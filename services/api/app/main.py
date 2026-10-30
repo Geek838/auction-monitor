@@ -28,6 +28,8 @@ from app.exchange.models import ConversionRequest, ConversionReport
 from app.exchange.service import convert_currency
 from app.georgia_excise.models import ExciseRequest, ExciseReport
 from app.georgia_excise.service import calculate_excise
+from app.auction_fees.models import FeeRequest, FeeReport
+from app.auction_fees.service import estimate_fee
 
 logger = logging.getLogger(__name__)
 app = FastAPI(title="Auction Intelligence — evidence and budget planning", version="0.6.0")
@@ -94,6 +96,13 @@ def georgia_excise(request: ExciseRequest, response: Response) -> ExciseReport:
     response.headers["Cache-Control"] = "no-store, max-age=0"
     response.headers["X-Content-Type-Options"] = "nosniff"
     return calculate_excise(request)
+
+
+@app.post("/api/v1/auction-fees/estimate", response_model=FeeReport)
+async def auction_fee_estimate(request: FeeRequest, response: Response) -> FeeReport:
+    response.headers["Cache-Control"] = "no-store, max-age=0"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return await estimate_fee(request)
 
 
 @app.get("/api/v1/local-vision/status", response_model=LocalVisionStatus)

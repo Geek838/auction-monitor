@@ -41,6 +41,7 @@ class ConversionReport(Contract):
     schema_version: Literal['exchange-v1'] = 'exchange-v1'
     source: Literal['NATIONAL_BANK_OF_GEORGIA'] = 'NATIONAL_BANK_OF_GEORGIA'
     source_url: str
+    source_request_date: date | None = None
     outcome: Literal['CONVERTED', 'STALE', 'UNAVAILABLE', 'NOT_YET_EFFECTIVE']
     request: ConversionRequest
     converted_amount: str | None = None

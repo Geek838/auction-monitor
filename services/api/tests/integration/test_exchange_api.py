@@ -98,6 +98,33 @@ def test_georgia_midnight_controls_age_not_server_utc_day(client, monkeypatch):
     assert report['quote']['age_days'] == 1
 
 
+def test_source_date_is_captured_before_request_and_age_recalculated_at_midnight(client, monkeypatch):
+    times = iter([datetime(2026, 10, 30, 19, 59, tzinfo=timezone.utc),
+                  datetime(2026, 10, 30, 19, 59, tzinfo=timezone.utc),
+                  datetime(2026, 10, 30, 20, 1, tzinfo=timezone.utc),
+                  datetime(2026, 10, 30, 20, 1, tzinfo=timezone.utc)])
+    monkeypatch.setattr(service, 'utc_now', lambda: next(times))
+    observed = []
+    def get(self):
+        observed.append(self.requested_on.isoformat())
+        return source('2026-10-30')
+    monkeypatch.setattr(NbgClient, 'request_json', get)
+    report = client.post('/api/v1/exchange/convert', json=PAYLOAD).json()
+    assert observed == ['2026-10-30'] and report['source_request_date'] == '2026-10-30'
+    assert report['quote']['age_days'] == 1 and report['quote']['freshness'] == 'PREVIOUS_EFFECTIVE_DATE'
+
+
+def test_next_day_quote_cannot_become_usable_during_midnight_crossing(client, monkeypatch):
+    times = iter([datetime(2026, 10, 30, 19, 59, tzinfo=timezone.utc),
+                  datetime(2026, 10, 30, 19, 59, tzinfo=timezone.utc),
+                  datetime(2026, 10, 30, 20, 1, tzinfo=timezone.utc),
+                  datetime(2026, 10, 30, 20, 1, tzinfo=timezone.utc)])
+    monkeypatch.setattr(service, 'utc_now', lambda: next(times))
+    monkeypatch.setattr(NbgClient, 'request_json', lambda self: source('2026-10-31'))
+    report = client.post('/api/v1/exchange/convert', json=PAYLOAD).json()
+    assert report['outcome'] == 'UNAVAILABLE' and report['converted_amount'] is None
+
+
 def test_tomorrow_published_today_is_withheld_until_effective(client, monkeypatch):
     body = source('2026-10-31')
     body[0]['currencies'][0]['date'] = '2026-10-30T08:00:00.000Z'

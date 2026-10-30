@@ -41,9 +41,9 @@ def test_observed_official_calculator_cases_are_reproduced_as_only_excise(client
     assert report['excise_amount'] == expected and report['rate_gel_per_cc'] == rate and report['age_years'] == age
     assert report['currency'] == 'GEL' and report['other_clearance_components'] == 'NOT_CALCULATED'
     assert report['source_kind'] == 'STATUTORY_COMPONENT_USER_DECLARED_FACTS'
-    assert report['rule']['source_clauses'] == ['Article 188(12)', 'Article 188(13)', 'Article 188(18)']
+    assert report['rule']['source_clauses'] == ['Article 188(12)', 'Article 188(13)', 'Article 188(14)', 'Article 188(15)', 'Article 188(16)', 'Article 188(18)']
     assert report['rule']['source_url'].endswith('/ka/document/view/1043717?publication=247')
-    assert report['rule']['reviewed_on'] == '2026-10-30' and report['issues'] == []
+    assert report['rule']['reviewed_on'] == '2026-10-31' and report['issues'] == []
     assert report['warnings'] and 'no-store' in response.headers['cache-control']
     assert response.headers['x-content-type-options'] == 'nosniff'
     assert 'total_clearance' not in report and 'import_duty' not in report and 'vat' not in report
@@ -69,9 +69,9 @@ def test_no_missing_eligibility_fact_is_silently_assumed(client, field):
     ('vehicle_category', 'SPORT', 'VEHICLE_CATEGORY_UNSUPPORTED'),
     ('vehicle_category', 'CLASSIC', 'VEHICLE_CATEGORY_UNSUPPORTED'),
     ('vehicle_category', 'OTHER', 'VEHICLE_CATEGORY_UNSUPPORTED'),
-    ('powertrain', 'HYBRID', 'POWERTRAIN_UNSUPPORTED'), ('powertrain', 'ELECTRIC', 'POWERTRAIN_UNSUPPORTED'),
-    ('powertrain', 'OTHER', 'POWERTRAIN_UNSUPPORTED'), ('steering', 'RIGHT', 'STEERING_UNSUPPORTED'),
-    ('steering', 'CONVERTED', 'STEERING_UNSUPPORTED'), ('procedure', 'RE_EXPORT', 'PROCEDURE_UNSUPPORTED'),
+    ('powertrain', 'ELECTRIC', 'POWERTRAIN_UNSUPPORTED'),
+    ('powertrain', 'OTHER', 'POWERTRAIN_UNSUPPORTED'), ('steering', 'UNKNOWN', 'STEERING_UNKNOWN'),
+    ('procedure', 'RE_EXPORT', 'PROCEDURE_UNSUPPORTED'),
     ('procedure', 'OTHER', 'PROCEDURE_UNSUPPORTED'), ('exemption_claimed', True, 'EXEMPTION_CLAIMED_UNSUPPORTED'),
     ('special_status', True, 'SPECIAL_STATUS_UNSUPPORTED'),
     ('production_year_confirmed', False, 'PRODUCTION_YEAR_NOT_CONFIRMED'),
@@ -154,3 +154,28 @@ def test_frozen_product_support_limits_withhold_without_implying_statutory_exemp
 def test_supported_age_displacement_edges_are_inclusive(client, year, cc, expected):
     report = client.post('/api/v1/georgia/excise', json=PAYLOAD | {'production_year': year, 'engine_cc': cc}).json()
     assert report['outcome'] == 'CALCULATED_COMPONENT' and report['excise_amount'] == expected
+
+
+@pytest.mark.parametrize('year,powertrain,steering,expected', [
+    (2021, 'HYBRID', 'ORIGINAL_LEFT', '1200.00'),
+    (2020, 'HYBRID', 'ORIGINAL_LEFT', '1200.00'),
+    (2021, 'PETROL', 'RIGHT', '9000.00'),
+    (2019, 'PETROL', 'RIGHT', '27000.00'),
+    (2021, 'DIESEL', 'CONVERTED', '9000.00'),
+])
+def test_official_hybrid_and_steering_component_cases(client, year, powertrain, steering, expected):
+    report = client.post('/api/v1/georgia/excise', json=PAYLOAD | {'production_year': year, 'powertrain': powertrain, 'steering': steering}).json()
+    assert report['outcome'] == 'CALCULATED_COMPONENT'
+    assert report['excise_amount'] == expected
+    assert report['other_clearance_components'] == 'NOT_CALCULATED'
+
+
+@pytest.mark.parametrize('changes,code', [
+    ({'powertrain': 'HYBRID', 'production_year': 2019}, 'HYBRID_AGE_UNSUPPORTED'),
+    ({'powertrain': 'HYBRID', 'steering': 'RIGHT'}, 'HYBRID_STEERING_UNSUPPORTED'),
+    ({'powertrain': 'HYBRID', 'steering': 'CONVERTED'}, 'HYBRID_STEERING_UNSUPPORTED'),
+])
+def test_unvalidated_hybrid_cases_withhold(client, changes, code):
+    report = client.post('/api/v1/georgia/excise', json=PAYLOAD | changes).json()
+    assert report['outcome'] == 'WITHHELD' and report['excise_amount'] is None
+    assert code in [issue['code'] for issue in report['issues']]

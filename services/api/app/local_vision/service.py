@@ -161,6 +161,8 @@ def _run_locked(request: LocalInspectionRequest, reference, model: str) -> Local
             raise RuntimeFailure("REMOTE_MODEL_DENIED", "The runtime reported remote inference; no findings were released.")
         if answer.get("model") != model or answer.get("done") is not True:
             raise RuntimeFailure("INVALID_MODEL_OUTPUT", "The model did not return a completed response for the selected model.")
+        if answer.get("done_reason") == "length":
+            raise RuntimeFailure("MODEL_OUTPUT_TRUNCATED", "The model reached its output limit before completing the report. No findings were released.")
         message = answer.get("message")
         if not isinstance(message, dict) or message.get("tool_calls") or not isinstance(message.get("content"), str):
             raise RuntimeFailure("INVALID_MODEL_OUTPUT", "The model output could not be validated.")

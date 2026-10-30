@@ -52,14 +52,18 @@ if (mode === 'fixture') {
     await expect(region.getByText('9,000.00 GEL', { exact: true })).toBeVisible();
   });
 
-  test('unknown eligibility and unsupported hybrid or re-export do not become zero-tax claims', async ({ page }) => {
+  test('eligible hybrid calculates while unknown, unsupported hybrid and re-export withhold', async ({ page }) => {
     const unknown = await calculate(page);
     expect(unknown.outcome).toBe('WITHHELD'); expect(unknown.excise_amount).toBeNull();
     await expect(page.getByRole('heading', { name: 'Excise amount withheld', exact: true })).toBeVisible();
     await fillSupported(page);
     await page.getByLabel('Powertrain', { exact: true }).selectOption('HYBRID');
     const hybrid = await calculate(page);
-    expect(hybrid.outcome).toBe('WITHHELD'); expect(hybrid.excise_amount).toBeNull();
+    expect(hybrid.outcome).toBe('CALCULATED_COMPONENT'); expect(hybrid.excise_amount).toBe('1200.00');
+    await page.getByLabel('Steering configuration', { exact: true }).selectOption('RIGHT');
+    const unsupportedHybrid = await calculate(page);
+    expect(unsupportedHybrid.outcome).toBe('WITHHELD'); expect(unsupportedHybrid.excise_amount).toBeNull();
+    await page.getByLabel('Steering configuration', { exact: true }).selectOption('ORIGINAL_LEFT');
     await page.getByLabel('Powertrain', { exact: true }).selectOption('DIESEL');
     await page.getByLabel('Import procedure', { exact: true }).selectOption('RE_EXPORT');
     const reExport = await calculate(page);

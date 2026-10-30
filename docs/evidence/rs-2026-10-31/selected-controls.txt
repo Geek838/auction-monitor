@@ -1,0 +1,6 @@
+SELECTED Hybrid [true,false,false,false,false,false]
+SELECTED Hybrid [true,false,false,false,false,false]
+SELECTED Hybrid [true,false,false,false,false,false]
+SELECTED Right Wheel/Moved [false,false,true,false,false,false]
+SELECTED Right Wheel/Moved [false,false,true,false,false,false]
+SELECTED NONE [false,false,false,false,false,false]

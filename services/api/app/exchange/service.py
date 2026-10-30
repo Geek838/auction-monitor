@@ -81,9 +81,16 @@ def _convert(request: ConversionRequest) -> ConversionReport:
         report.errors = [ExchangeError(code='BUSY', message='Two exchange-rate requests are already in progress; retry shortly.')]
         return report
     try:
-        body = NbgClient().request_json()
+        # Capture one Georgia calendar day for the outgoing source request.
+        # Recalculate freshness after retrieval so a midnight transition does
+        # not accidentally present an older quote as effective today.
+        requested_on = (utc_now() + timedelta(hours=4)).date()
+        report.source_request_date = requested_on
+        body = NbgClient(requested_on).request_json()
         now = utc_now()
         quote = _quote(body, now)
+        if quote.effective_date > requested_on and quote.freshness != 'FUTURE_EFFECTIVE_DATE':
+            raise ValueError('Quote became effective after the requested source day')
         report.quote = quote
         if quote.freshness == 'FUTURE_EFFECTIVE_DATE':
             report.outcome = 'NOT_YET_EFFECTIVE'

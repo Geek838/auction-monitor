@@ -115,7 +115,7 @@ After pulling this development increment, use the same backend and frontend star
 
 - In Review evidence, enter a full VIN and select **Look up manufacturer details**. This explicitly sends the VIN only to the free official NHTSA service; apply returned fields only after reviewing them. It does not verify the auction listing or vehicle history.
 - In Plan budget, provide cost ranges and dated sources, explicit non-applicable categories and the actual fee schedule. No Georgian tax/repair price defaults are fabricated. Missing costs withhold a bid ceiling.
-- Local photo analysis needs additional installed model software/weights, memory and compute. It is optional and disabled by default. Follow [local vision setup](local-vision.md) for separate Ollama/API process variables; do not assume setting a variable installs or starts a model.
+- Local photo analysis needs Ollama, model weights, memory and compute. It is experimental and disabled by default. After installing Ollama from its official site and running `scripts/setup.ps1`, stop any existing Ollama desktop service, then run `.\scripts\start-local-vision.ps1` in place of `start-api.ps1`. The launcher starts its own loopback service with cloud features disabled and downloads the tested model (approximately 1.9 GB) if missing. Start the web app in a separate terminal as usual. It refuses an occupied Ollama port and never stops an existing service. See [local vision setup](local-vision.md) for details and limitations.
 
 Native Windows execution and hosted CI remain unobserved in the Linux workspace; see the current increment test report for what actually ran.
 

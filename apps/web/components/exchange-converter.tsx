@@ -5,7 +5,7 @@ import { FormEvent, useEffect, useRef, useState } from 'react';
 type Currency = 'USD' | 'GEL';
 type Input = { amount: string; from_currency: Currency; to_currency: Currency };
 type Quote = { currency: 'USD'; quantity: number; rate_gel: string; gel_per_usd: string; effective_date: string; published_at: string; age_days: number; freshness: 'EFFECTIVE_TODAY' | 'PREVIOUS_EFFECTIVE_DATE' | 'STALE' | 'FUTURE_EFFECTIVE_DATE' };
-type Report = { schema_version: 'exchange-v1'; source: 'NATIONAL_BANK_OF_GEORGIA'; source_url: string; outcome: 'CONVERTED' | 'STALE' | 'UNAVAILABLE' | 'NOT_YET_EFFECTIVE'; request: Input; converted_amount: string | null; quote: Quote | null; retrieved_at: string; rounding: 'ROUND_HALF_UP_2_DECIMAL_PLACES'; max_age_days: 4; errors: { code: string; message: string }[]; warnings: string[] };
+type Report = { schema_version: 'exchange-v1'; source: 'NATIONAL_BANK_OF_GEORGIA'; source_url: string; source_request_date?: string | null; outcome: 'CONVERTED' | 'STALE' | 'UNAVAILABLE' | 'NOT_YET_EFFECTIVE'; request: Input; converted_amount: string | null; quote: Quote | null; retrieved_at: string; rounding: 'ROUND_HALF_UP_2_DECIMAL_PLACES'; max_age_days: 4; errors: { code: string; message: string }[]; warnings: string[] };
 const sourceUrl = 'https://nbg.gov.ge/gw/api/ct/monetarypolicy/currencies/en/json';
 const decimal = /^(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$/;
 const money = /^(?:0|[1-9][0-9]*)\.[0-9]{2}$/;
@@ -15,7 +15,7 @@ function readReport(value: unknown, expected: Input): Report | null {
   if (!record(value) || value.schema_version !== 'exchange-v1' || value.source !== 'NATIONAL_BANK_OF_GEORGIA' || value.source_url !== sourceUrl
     || !['CONVERTED', 'STALE', 'UNAVAILABLE', 'NOT_YET_EFFECTIVE'].includes(String(value.outcome))
     || !record(value.request) || value.request.amount !== expected.amount || value.request.from_currency !== expected.from_currency || value.request.to_currency !== expected.to_currency
-    || !stamp(value.retrieved_at) || value.rounding !== 'ROUND_HALF_UP_2_DECIMAL_PLACES' || value.max_age_days !== 4
+    || !stamp(value.retrieved_at) || value.source_request_date != null && (typeof value.source_request_date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value.source_request_date) || !stamp(value.source_request_date)) || value.rounding !== 'ROUND_HALF_UP_2_DECIMAL_PLACES' || value.max_age_days !== 4
     || !Array.isArray(value.errors) || !value.errors.every(item => record(item) && typeof item.code === 'string' && typeof item.message === 'string')
     || !Array.isArray(value.warnings) || !value.warnings.every(item => typeof item === 'string')) return null;
   if (value.quote !== null) {
@@ -84,7 +84,7 @@ export default function ExchangeConverter() {
           {report.quote.freshness === 'PREVIOUS_EFFECTIVE_DATE' && <p>The effective date precedes retrieval. This can be normal on weekends or holidays; check the displayed date before relying on the amount.</p>}</>}
         {report.errors.length > 0 && <ul className="exchange-warnings">{report.errors.map((item, index) => <li key={index}>{item.message}</li>)}</ul>}
         <p className="help">Converted amounts are rounded to two decimal places, with halves rounded up. This planner withholds rates older than four calendar days; this is our freshness policy, not a legal expiry rule.</p>
-        <p className="help">Source: <a href="https://nbg.gov.ge/en/monetary-policy/currency" target="_blank" rel="noopener noreferrer">National Bank of Georgia official exchange rates</a>. Retrieved {report.retrieved_at}.</p>
+        <p className="help">Source: <a href="https://nbg.gov.ge/en/monetary-policy/currency" target="_blank" rel="noopener noreferrer">National Bank of Georgia official exchange rates</a>.{report.source_request_date && ` Rate requested for ${report.source_request_date} (Georgia calendar).`} Retrieved {report.retrieved_at}.</p>
         {report.warnings.length > 0 && <ul className="exchange-warnings">{report.warnings.map((warning, index) => <li key={index}>{warning}</li>)}</ul>}
       </section>}
     </div>

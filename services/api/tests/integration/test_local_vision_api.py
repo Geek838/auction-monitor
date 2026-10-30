@@ -182,7 +182,7 @@ def test_inventory_cannot_silently_select_a_different_or_hosted_model(client, mo
     assert all(path != '/api/chat' for method, path, payload in calls)
 
 
-@pytest.mark.parametrize('mutation', ['dangling_image', 'missing_evidence', 'confidence', 'financial_extra', 'safety_claim', 'missing_limitations'])
+@pytest.mark.parametrize('mutation', ['dangling_image', 'missing_evidence', 'confidence', 'financial_extra', 'safety_claim', 'no_inspection_needed', 'no_inspection_limitation', 'missing_limitations'])
 def test_model_output_is_untrusted_and_never_replaced_with_seeded_findings(client, monkeypatch, mutation):
     model_output = output()
     finding = model_output['findings'][0]
@@ -191,6 +191,8 @@ def test_model_output_is_untrusted_and_never_replaced_with_seeded_findings(clien
     elif mutation == 'confidence': finding['confidence'] = 0.99
     elif mutation == 'financial_extra': finding['repair_cost'] = '100.00'
     elif mutation == 'safety_claim': finding['description'] = 'This vehicle is safe to drive.'
+    elif mutation == 'no_inspection_needed': finding['confirmation'] = 'No further inspection is required for this observation.'
+    elif mutation == 'no_inspection_limitation': model_output['limitations'] = ['No further inspection is required for this observation.']
     elif mutation == 'missing_limitations': model_output['limitations'] = []
     runtime_double(monkeypatch, model_output=model_output)
     response = client.post('/api/v1/local-inspections', json=case())
@@ -212,6 +214,20 @@ def test_invalid_runtime_completion_and_tool_requests_fail_closed(client, monkey
     assert response.status_code == 200
     assert response.json()['reason_code'] == 'INVALID_MODEL_OUTPUT'
     assert_no_report_content(response.json())
+
+
+@pytest.mark.parametrize('content', ['', json.dumps(output())])
+def test_output_limit_is_reported_without_releasing_even_valid_looking_findings(client, monkeypatch, content):
+    def truncated(answer):
+        answer['done_reason'] = 'length'
+        answer['message']['content'] = content
+        answer['message']['thinking'] = 'PRIVATE MODEL REASONING MUST NOT APPEAR IN THE API'
+    runtime_double(monkeypatch, mutate_answer=truncated)
+    report = client.post('/api/v1/local-inspections', json=case()).json()
+    assert report['reason_code'] == 'MODEL_OUTPUT_TRUNCATED'
+    assert 'output limit' in report['reasons'][0]
+    assert 'PRIVATE MODEL REASONING' not in json.dumps(report)
+    assert_no_report_content(report)
 
 
 def test_model_replacement_during_awaited_run_invalidates_findings(client, monkeypatch):

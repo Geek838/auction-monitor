@@ -8,7 +8,7 @@ export default async function Home({ searchParams }: WorkflowPageProps) {
     <div className="site-shell home-page">
       <header className="masthead">
         <a className="wordmark" href="/" aria-label="Auction Intelligence home">Auction Intelligence<span className="wordmark-dot">.</span></a>
-        <nav aria-label="Vehicle tools"><a href="/review">Vehicle review</a><a href="/budget">Budget planner</a><a href="/georgia-excise">Georgia excise</a></nav>
+        <nav aria-label="Vehicle tools"><a href="/review">Vehicle review</a><a href="/budget">Budget planner</a><a href="/auction-fees">Auction fees</a><a href="/georgia-excise">Georgia excise</a></nav>
         <a className="home-header-action" href="/review">Start a review <span aria-hidden="true">→</span></a>
       </header>
       <main id="main-content">
@@ -32,7 +32,8 @@ export default async function Home({ searchParams }: WorkflowPageProps) {
           <div className="home-tool-grid">
             <a href="/review" className="home-tool"><span className="home-tool-icon" aria-hidden="true">01</span><h3>Vehicle review</h3><p>Organize your details, photos and questions before you buy.</p><span className="home-tool-link">Start a review →</span></a>
             <a href="/budget" className="home-tool"><span className="home-tool-icon" aria-hidden="true">02</span><h3>Budget planner</h3><p>Bring bids, transport and repair quotes into one picture.</p><span className="home-tool-link">Plan your budget →</span></a>
-            <a href="/georgia-excise" className="home-tool"><span className="home-tool-icon" aria-hidden="true">03</span><h3>Georgia excise</h3><p>Calculate the supported excise component for your vehicle.</p><span className="home-tool-link">Check excise →</span></a>
+            <a href="/auction-fees" className="home-tool"><span className="home-tool-icon" aria-hidden="true">03</span><h3>Auction fees</h3><p>Request an indicative fee estimate for your bid.</p><span className="home-tool-link">Estimate fees →</span></a>
+            <a href="/georgia-excise" className="home-tool"><span className="home-tool-icon" aria-hidden="true">04</span><h3>Georgia excise</h3><p>Calculate the supported excise component for your vehicle.</p><span className="home-tool-link">Check excise →</span></a>
           </div>
         </section>
         <section className="home-demo-heading"><p className="home-kicker">LISTING LOOKUP · DEMONSTRATION</p><h2>See how matching works.</h2><p>Live auction lookup is not available yet. Try a sample listing below to explore the identity checks.</p></section>

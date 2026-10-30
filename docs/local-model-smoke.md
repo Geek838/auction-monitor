@@ -1,6 +1,6 @@
 # Local-model runtime smoke evidence
 
-Execution date: 29 October 2026 (Asia/Tbilisi). This is a bounded local-runtime experiment using a newly authored geometric engineering image. It is not a vehicle inspection, damage benchmark, source-data integration or qualified safety assessment. **Latest operational result:** the final Qwen3-VL 2B retry completed through the production Next.js proxy and FastAPI in 46.325 seconds with an appropriate no-vehicle abstention. Earlier weak output and timeout results are retained below; automotive quality remains unvalidated.
+Execution date: 29 October 2026 (Asia/Tbilisi). This is a bounded local-runtime experiment using a newly authored geometric engineering image. It is not a vehicle inspection, damage benchmark, source-data integration or qualified safety assessment. The final Qwen3-VL 2B geometry retry completed through the production Next.js proxy and FastAPI in 46.325 seconds with an appropriate no-vehicle abstention. Later [real damaged-vehicle tests](research/local-vision-real-vehicle-2026-10-31.md) did not produce usable findings; automotive quality remains unvalidated.
 
 ## Verified sources and artifacts
 
@@ -44,13 +44,13 @@ The initial candidate's semantic weaknesses justified checking one additional pe
 
 **Qwen2.5-VL 3B was rejected before downloading weights.** Although its Ollama registry license layer contains Apache 2.0, the canonical [Qwen2.5-VL-3B-Instruct model card](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct) identifies `qwen-research`, and its actual [upstream LICENSE](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct/blob/main/LICENSE) says the grant is “FOR NON-COMMERCIAL PURPOSES ONLY” and commercial users must request a license. A registry wrapper is not sufficient evidence to ignore the canonical upstream restriction. No Qwen2.5-VL 3B weights were downloaded or executed.
 
-The fallback [qwen3-vl:2b](https://ollama.com/library/qwen3-vl:2b) exists in the official library. Its canonical [Qwen3-VL-2B-Instruct card](https://huggingface.co/Qwen/Qwen3-VL-2B-Instruct), reviewed at upstream commit `89644892e4d85e24eaac8bacfd4f463576704203`, identifies Apache 2.0; the actual registry license layer matches Apache 2.0 as well. The upstream repository publishes a README/model-card license declaration rather than a separate LICENSE file. This agreement of published sources distinguishes it from the rejected 3B candidate; it is not an automotive-quality endorsement.
+The fallback [qwen3-vl:2b](https://ollama.com/library/qwen3-vl:2b) exists in the official library. **Correction, 31 October:** its installed manifest's license layer references `2b-thinking-bf16`, and Ollama reports the `qwen3-vl-thinking` renderer and parser. The earlier reference to the upstream Instruct card did not establish the identity of this installed tag. The [Qwen3-VL-2B-Thinking card](https://huggingface.co/Qwen/Qwen3-VL-2B-Thinking) declares Apache 2.0, as does the installed registry license layer. The distinct `qwen3-vl:2b-instruct` tag is a separate artifact. None of these licenses establishes automotive quality.
 
 - Verified manifest digest: `0635d9d857d497aeadba3d7d27485746c50554446f9f6ec01ef39788221adbe8`.
 - Model blob: `ebabfa59b71a5b96e0281ec2994977e785284e0939807a99fc340dec3c6f10de`, 1,889,496,384 bytes, full SHA-256 checked before cache installation.
 - Registry license blob: `7339fa418c9ad3e8e12e74ad0fd26a9cc4be8703f9c110728a992b193be85cb2`, 11,355 bytes, verified before downloading large weights.
 - Declared artifacts approximately 1.89 GB; aggregate runtime plus both installed candidates approximately **5.16 GB**, within the separately authorized 8 GB follow-up budget. All model files remain ignored.
-- The actual runtime reported local Q4_K_M weights, 2.1B parameters, the exact digest and `completion`, `vision`, `tools`, `thinking` capabilities. The application supplies no tools and rejects tool calls. After verifying the official chat API's supported `think` field, the application explicitly disables thinking for its bounded final-JSON task.
+- The actual runtime reported local Q4_K_M weights, 2.1B parameters, the exact digest and `completion`, `vision`, `tools`, `thinking` capabilities. The application supplies no tools and rejects tool calls. It requests `think: false`; a later real-car test showed the installed thinking renderer still emitted thinking text and exhausted the output budget on that case.
 
 ### Actual second-candidate API outcome
 

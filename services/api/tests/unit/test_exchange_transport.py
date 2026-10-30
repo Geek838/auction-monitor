@@ -1,5 +1,6 @@
 """Fixed official destination, bounded bytes, TLS-default opener and decimal JSON."""
 from decimal import Decimal
+from datetime import date
 from io import BytesIO
 from urllib.error import HTTPError, URLError
 
@@ -28,10 +29,10 @@ def fake_opener(monkeypatch, data=None, error=None):
 
 def test_fixed_official_url_and_native_decimal_parsing(monkeypatch):
     calls = fake_opener(monkeypatch, b'[{"rate":2.5959,"quantity":1}]')
-    result = runtime.NbgClient().request_json()
+    result = runtime.NbgClient(date(2026, 10, 31)).request_json()
     assert result[0]['rate'] == Decimal('2.5959') and type(result[0]['rate']) is Decimal
     request, timeout = calls[0]
-    assert request.full_url == runtime.SOURCE_URL
+    assert request.full_url == runtime.SOURCE_URL + '/?date=2026-10-31'
     assert request.full_url.startswith('https://nbg.gov.ge/')
     assert timeout == 10 and request.get_method() == 'GET'
 
