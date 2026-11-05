@@ -1,5 +1,7 @@
 # Georgia excise component — supported planning subset
 
+**5 November update:** Original-left-drive hybrids aged 0–30 are supported; the 60% reduction applies only through age six. A captured age-seven case and the explicit Article 188(13–14) text support this scope. The source text, rather than additional calculator cases, supports ages 8–30. See the update in [additional dated evidence](georgia-excise-extension-2026-10-31.md). Other exclusions remain in force.
+
 PO freeze: **30 October 2026 (Asia/Tbilisi)**. This extends the [official-source research](georgia-cost-evidence.md) with actual Revenue Service calculator UI results and primary Georgian statutory clauses. It authorizes implementation of one sourced component estimate. It does not establish total clearance, final customs liability, vehicle classification or full 1.0 readiness.
 
 **31 October extension:** The original ordinary-car subset below is expanded to left-hand-drive hybrids aged 0–6 and conventional petrol/diesel cars with right or converted steering. Hybrid cars older than six and hybrid cars with right/converted steering remain withheld. The original October 30 descriptions of those cases as unsupported are historical; see [additional dated primary-source and calculator evidence](georgia-excise-extension-2026-10-31.md). Full clearance is still not calculated.

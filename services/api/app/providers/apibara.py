@@ -90,7 +90,9 @@ class ApibaraProvider:
         identity = ListingIdentity(house=house, lot_or_stock_number=lot)
         vin = _text(raw.get('vin'), 'VIN', max_length=32)
         # Missing/masked VIN is not evidence of a vehicle identity.
-        if vin and not re.fullmatch(r'[A-HJ-NPR-Z0-9]{17}', vin.upper()):
+        # Uppercasing non-ASCII text can expand characters (for example, ß
+        # becomes SS), accidentally turning a malformed value into a VIN.
+        if vin and (not vin.isascii() or not re.fullmatch(r'[A-HJ-NPR-Z0-9]{17}', vin.upper())):
             vin = None
         elif vin:
             vin = vin.upper()

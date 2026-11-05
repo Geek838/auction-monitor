@@ -180,7 +180,7 @@ export default function Resolver({ initialUrl = '' }: { initialUrl?: string }) {
             aria-describedby={`url-help${error ? ' lookup-error' : ''}`} aria-invalid={Boolean(error)} />
           <button className="submit-button" disabled={loading} type="submit">{loading ? 'Resolving…' : 'Resolve listing'}<ExternalArrow /></button>
         </div>
-        <p id="url-help" className="help">Links are parsed without opening the auction page. IAAI page IDs stay distinct from stock numbers.</p>
+        <p id="url-help" className="help">IAAI page IDs and stock numbers are different.</p>
       </form>
       {offline && <div className="examples"><span>{context.mode === 'FIXTURE' ? 'Try a fixture:' : 'Try a simulation:'}</span>
         {examples.map(example => <button key={example.url} type="button" disabled={loading}
@@ -189,16 +189,11 @@ export default function Resolver({ initialUrl = '' }: { initialUrl?: string }) {
         </button>)}
       </div>}
     </section>
-    <BuyerJourney current="/" reference={url} />
-
     <div className="result-region" aria-live="polite" aria-atomic="true">
       {loading && <div className="processing" role="status"><span className="loading-dot" aria-hidden="true" />Checking the listing identity…</div>}
       {error && <section className="error-panel" id="lookup-error" role="alert">
         <p className="eyebrow">URL COULD NOT BE RESOLVED</p><h2>This link cannot be resolved</h2><p>{error}</p>
       </section>}
-      {!result && !error && !loading && <div className="empty-state"><span className="sheet-number">01</span><div>
-        <h2>Identity first. Evidence always.</h2><p>Your result will show what matched, where the record came from, and what remains unknown.</p>
-      </div></div>}
       {result && copy && <section className={`result-sheet ${result.status === 'MATCHED' ? 'is-matched' : 'needs-review'}`} aria-label="Listing resolution result">
         <div className="result-heading"><div><p className="eyebrow">RESOLUTION / {result.status.replaceAll('_', ' ')}</p><h2>{copy.title}</h2></div>
           <div className="badges"><span className="tag">{resultBadge(result)}</span>{result.provider_context.mode !== 'EXTERNAL' && result.provider_context.authorization === 'DENIED' && <span className="tag">ACCESS DENIED</span>}{historical && <span className="tag archived">{archived ? 'ARCHIVED' : 'HISTORICAL'}</span>}</div>
@@ -270,6 +265,6 @@ export default function Resolver({ initialUrl = '' }: { initialUrl?: string }) {
         {result.warnings.length > 0 && <aside className="warnings" aria-label="Data limitations"><h3>Read before using this result</h3><ul>{result.warnings.map((warning, index) => <li key={index}>{warning}</li>)}</ul></aside>}
       </section>}
     </div>
-    <section className="scope-note"><p className="eyebrow">THE FIRST CHECK</p><p>Listing lookup checks the available identity evidence. Any authored inspection preview uses mock data; optional local photo analysis is experimental, and repair prices are not automatically verified.</p></section>
+    <BuyerJourney current="/" reference={url} compact />
   </>;
 }

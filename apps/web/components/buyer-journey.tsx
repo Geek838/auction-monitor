@@ -7,8 +7,14 @@ const steps = [
   { path: '/budget', label: 'Budget & bid planning', detail: 'Calculate from your dated quotes and assumptions.' },
 ];
 
-export default function BuyerJourney({ current, reference = '' }: { current: string; reference?: string }) {
+export default function BuyerJourney({ current, reference = '', compact = false }: { current: string; reference?: string; compact?: boolean }) {
   const safe = workflowReference(reference);
+  if (compact) return <section className="buyer-journey buyer-journey-compact" aria-label="Buyer workflow">
+    <nav aria-label="Buyer workflow steps"><ol>{steps.map(step => <li key={step.path}>
+      <a href={workflowHref(step.path, safe)} aria-current={current === step.path ? 'step' : undefined}>{step.label}</a>
+    </li>)}</ol></nav>
+    {safe && <p className="journey-privacy">Only the unverified listing link transfers. Photos, notes and costs stay on their page. The link appears in browser history.</p>}
+  </section>;
   return <section className="buyer-journey" aria-label="Buyer workflow">
     <div className="journey-heading"><p className="eyebrow">YOUR NEXT CHECK</p><p>Each step keeps its own evidence and limitations. <a href="/exchange">Exchange rates</a> · <a href="/georgia-excise">Georgia excise</a> · <a href="/auction-fees">Auction fee estimate</a></p></div>
     <nav aria-label="Buyer workflow steps"><ol>{steps.map((step, index) => <li key={step.path}>

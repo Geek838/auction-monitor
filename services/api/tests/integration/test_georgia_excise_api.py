@@ -159,6 +159,9 @@ def test_supported_age_displacement_edges_are_inclusive(client, year, cc, expect
 @pytest.mark.parametrize('year,powertrain,steering,expected', [
     (2021, 'HYBRID', 'ORIGINAL_LEFT', '1200.00'),
     (2020, 'HYBRID', 'ORIGINAL_LEFT', '1200.00'),
+    # The official RS calculator separately returned 9,000 GEL for this hybrid.
+    (2019, 'HYBRID', 'ORIGINAL_LEFT', '9000.00'),
+    (1996, 'HYBRID', 'ORIGINAL_LEFT', '9000.00'),
     (2021, 'PETROL', 'RIGHT', '9000.00'),
     (2019, 'PETROL', 'RIGHT', '27000.00'),
     (2021, 'DIESEL', 'CONVERTED', '9000.00'),
@@ -171,7 +174,6 @@ def test_official_hybrid_and_steering_component_cases(client, year, powertrain, 
 
 
 @pytest.mark.parametrize('changes,code', [
-    ({'powertrain': 'HYBRID', 'production_year': 2019}, 'HYBRID_AGE_UNSUPPORTED'),
     ({'powertrain': 'HYBRID', 'steering': 'RIGHT'}, 'HYBRID_STEERING_UNSUPPORTED'),
     ({'powertrain': 'HYBRID', 'steering': 'CONVERTED'}, 'HYBRID_STEERING_UNSUPPORTED'),
 ])

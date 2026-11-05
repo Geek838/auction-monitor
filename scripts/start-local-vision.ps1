@@ -33,7 +33,7 @@ try {
     $env:OLLAMA_NUM_PARALLEL = '1'
     $env:OLLAMA_MAX_QUEUE = '1'
     $env:LOCAL_VISION_ENABLED = '1'
-    $env:LOCAL_VISION_MODEL = 'qwen3-vl:2b'
+    $env:LOCAL_VISION_MODEL = 'qwen3-vl:2b-instruct'
     Write-Warning 'Photo analysis is experimental. Real-vehicle smoke tests did not produce usable findings; model output is not a qualified inspection.'
     Write-Host 'Starting local Ollama with cloud features disabled.'
     $daemon = Start-Process -FilePath $ollama.Source -ArgumentList 'serve' -NoNewWindow -PassThru
@@ -52,9 +52,9 @@ try {
     }
     if (-not $ready) { throw 'The local Ollama service did not become ready.' }
 
-    if (-not ($inventory.models | Where-Object { $_.name -eq 'qwen3-vl:2b' })) {
-        Write-Host 'Downloading qwen3-vl:2b from Ollama (approximately 1.9 GB). This requires disk space and an internet connection.'
-        & $ollama.Source pull 'qwen3-vl:2b'
+    if (-not ($inventory.models | Where-Object { $_.name -eq 'qwen3-vl:2b-instruct' })) {
+        Write-Host 'Downloading qwen3-vl:2b-instruct from Ollama (approximately 1.9 GB). This requires disk space and an internet connection.'
+        & $ollama.Source pull 'qwen3-vl:2b-instruct'
         if ($LASTEXITCODE -ne 0) { throw 'The local model download failed. Check your connection and available disk space.' }
     }
     if ($daemon.HasExited) { throw 'The local Ollama service stopped; no analysis is available.' }

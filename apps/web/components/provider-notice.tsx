@@ -3,32 +3,32 @@ import type { ProviderContext } from './resolution-types';
 export default function ProviderNotice({ context, loading }: { context: ProviderContext | null; loading: boolean }) {
   let label = loading ? 'CHECKING SOURCE' : 'SOURCE UNKNOWN';
   let explanation = loading
-    ? 'Checking the configured data source before describing this environment.'
-    : 'The configured source could not be verified. No fixture mode or live access is assumed.';
+    ? 'Checking the configured source.'
+    : 'The configured source could not be verified.';
   if (context?.mode === 'FIXTURE') {
     label = 'MOCK DATA';
-    explanation = 'Mock data environment. Results use test fixtures. No live auction data or inspection advice is provided.';
+    explanation = 'Sample listings only. No live auction data.';
   } else if (context?.mode === 'SIMULATED') {
     label = 'SIMULATED DATA';
-    explanation = 'Offline provider simulation. Every record is synthetic; no commercial license or live auction access is implied.';
+    explanation = 'Offline sample listings. No live auction data.';
   } else if (context?.mode === 'EXTERNAL') {
     if (context.authorization === 'DENIED' || !context.enabled) {
       label = 'ACCESS UNAVAILABLE';
-      explanation = 'The selected external source is disabled or lacks authorized access. A failed lookup will not be replaced with mock data.';
+      explanation = 'Check the provider configuration. No sample data will be substituted.';
     } else if (context.authorization === 'UNVERIFIED') {
       label = context.available ? 'EXTERNAL SOURCE' : 'SOURCE UNAVAILABLE';
-      explanation = 'An external provider is selected with user-declared access. Its data and usage rights are not independently verified. Check each result and its source date.';
+      explanation = 'Provider data and freshness are not independently verified.';
     } else {
       label = context.available ? 'EXTERNAL SOURCE' : 'SOURCE UNAVAILABLE';
-      explanation = 'An external provider is selected. Check each result’s provenance and source date; permitted access does not imply live auction data.';
+      explanation = 'Check the source and date for each result.';
     }
   }
   return <div className="provider-notice" aria-label="Configured data source" aria-live="polite">
     <div className="mode-notice"><span className="tag">{label}</span><p>{explanation}</p></div>
-    {context && <div className="provider-context">
+    {context && <details className="provider-context"><summary>Source details</summary>
       <p><span>Selected provider</span><strong>{context.name}</strong></p>
       <p><span>Access status</span>{context.authorization === 'DENIED' ? 'Not authorized' : context.mode === 'FIXTURE' ? 'Local fixture access' : context.mode === 'SIMULATED' ? 'Synthetic offline access' : context.authorization === 'UNVERIFIED' ? 'User-declared access; not independently verified' : 'Permission reviewed; record availability varies'}</p>
       {context.reasons.length > 0 && <ul>{context.reasons.map((reason, index) => <li key={index}>{reason}</li>)}</ul>}
-    </div>}
+    </details>}
   </div>;
 }

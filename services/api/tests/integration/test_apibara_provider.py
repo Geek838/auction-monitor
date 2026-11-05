@@ -126,8 +126,10 @@ def test_missing_opt_in_or_key_never_contacts_provider(configured, monkeypatch):
     assert not seen
 
 
-def test_missing_or_masked_vin_not_invented(configured, monkeypatch):
-    transport(monkeypatch, source(vin='1HGCM826****'))
+@pytest.mark.parametrize('vin', ['1HGCM826****', '1HGCM82633A0043ß'])
+def test_missing_or_masked_vin_not_invented(configured, monkeypatch, vin):
+    # Unicode case expansion must not turn a malformed provider value into a VIN.
+    transport(monkeypatch, source(vin=vin))
     with TestClient(app) as client: result = post(client)
     assert result['status'] == 'MATCHED' and result['vehicle']['vin'] is None
     assert any('VIN is unavailable' in warning for warning in result['warnings'])

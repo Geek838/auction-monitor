@@ -60,6 +60,10 @@ if (mode === 'fixture') {
     await page.getByLabel('Powertrain', { exact: true }).selectOption('HYBRID');
     const hybrid = await calculate(page);
     expect(hybrid.outcome).toBe('CALCULATED_COMPONENT'); expect(hybrid.excise_amount).toBe('1200.00');
+    await page.getByLabel('Production year', { exact: true }).fill('2019');
+    await page.getByRole('checkbox', { name: /I have checked the actual production year/ }).check();
+    const olderHybrid = await calculate(page);
+    expect(olderHybrid.outcome).toBe('CALCULATED_COMPONENT'); expect(olderHybrid.excise_amount).toBe('9000.00');
     await page.getByLabel('Steering configuration', { exact: true }).selectOption('RIGHT');
     const unsupportedHybrid = await calculate(page);
     expect(unsupportedHybrid.outcome).toBe('WITHHELD'); expect(unsupportedHybrid.excise_amount).toBeNull();

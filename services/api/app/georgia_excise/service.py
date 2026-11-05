@@ -17,8 +17,8 @@ WARNINGS = [
     'This is only a statutory excise component based on user-declared eligibility and facts, not a Revenue Service assessment or complete clearance total.',
     'Import duty, VAT treatment, service charges, registration, transport and other costs are NOT calculated. No zero value is implied for any of them.',
     'Production year is required. VIN model year does not independently establish production year, customs classification, steering, powertrain or exemption eligibility.',
-    'The supported subset covers ordinary 8703 passenger cars with petrol/diesel engines and original left, right or converted steering, or left-drive hybrids aged 0–6. Vehicles must have 100–7000 cm³ displacement, no special status or exemption, and planned Georgia free circulation.',
-    'Historical declarations, re-export/refunds, electric vehicles, hybrids older than six or with right/converted steering, sport/classic and other special treatment remain outside this subset.',
+    'The supported subset covers ordinary 8703 passenger cars with petrol/diesel engines and original left, right or converted steering, or original-left-drive hybrids aged 0–30. Vehicles must have 100–7000 cm³ displacement, no special status or exemption, and planned Georgia free circulation.',
+    'Historical declarations, re-export/refunds, electric vehicles, hybrids with right/converted steering, sport/classic and other special treatment remain outside this subset.',
     'Age is planned declaration-registration year minus production year. Ordinary base rates are GEL 1.50/cm³ at age 0–6 and GEL 4.50/cm³ above six; supported left-drive hybrids aged 0–6 receive a 60% reduction, while supported right/converted steering receives a threefold base rate.',
     'The 31 December 2026 limit is this application’s review horizon, not a claim that the law expires then. Amendments or actual declaration facts can change the assessment.',
     'This GEL component does not populate clearance or registration in the USD budget; all remaining amounts and any exchange conversion require separate evidence.',
@@ -75,8 +75,6 @@ def calculate_excise(request: ExciseRequest) -> ExciseReport:
     if request.powertrain == 'HYBRID':
         if request.steering in {'RIGHT', 'CONVERTED'}:
             issue('HYBRID_STEERING_UNSUPPORTED', 'Hybrid vehicles with right or converted steering are not included in the reviewed subset.')
-        if request.declaration_year is not None and request.production_year is not None and request.declaration_year - request.production_year > 6:
-            issue('HYBRID_AGE_UNSUPPORTED', 'Hybrid vehicles older than six years are outside the reviewed subset.')
     for field in ['exemption_claimed', 'special_status']:
         value = getattr(request, field)
         if value is None:
@@ -89,7 +87,7 @@ def calculate_excise(request: ExciseRequest) -> ExciseReport:
         return report
     age = request.declaration_year - request.production_year
     rate = Decimal('1.50') if age <= 6 else Decimal('4.50')
-    if request.powertrain == 'HYBRID':
+    if request.powertrain == 'HYBRID' and age <= 6:
         rate *= Decimal('0.40')
     elif request.steering in {'RIGHT', 'CONVERTED'}:
         rate *= Decimal('3')

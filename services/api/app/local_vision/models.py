@@ -79,6 +79,18 @@ class ModelOutput(Contract):
         return self
 
 
+class SingleImageFinding(Contract):
+    classification: Literal["OBSERVED", "SUSPECTED", "UNKNOWN"]
+    component: str = Field(min_length=1, max_length=80, pattern=r"\S")
+    region: str = Field(min_length=1, max_length=80, pattern=r"\S")
+    description: str = Field(min_length=1, max_length=180, pattern=r"\S")
+
+
+class SingleImageOutput(Contract):
+    findings: list[SingleImageFinding] = Field(max_length=1)
+    limitations: list[str] = Field(min_length=1, max_length=2)
+
+
 class PreparedImage(Contract):
     image_id: str
     label: str
@@ -104,7 +116,7 @@ class LocalProvenance(Contract):
     model: str
     model_digest: str
     adapter_version: Literal["ollama-local-v1"] = "ollama-local-v1"
-    prompt_version: Literal["visible-evidence-v2"] = "visible-evidence-v2"
+    prompt_version: Literal["visible-evidence-v2", "single-image-observation-v1"] = "visible-evidence-v2"
     schema_version: Literal["local-inspection-v1"] = "local-inspection-v1"
     image_digests: dict[str, str]
     generated_at: AwareDatetime

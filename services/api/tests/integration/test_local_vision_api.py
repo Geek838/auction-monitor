@@ -73,6 +73,63 @@ def assert_no_report_content(report):
     assert report['review_status'] == 'EXPERIMENTAL_UNREVIEWED'
 
 
+def instruct_double(monkeypatch, model_output):
+    calls = runtime_double(monkeypatch, model_output=model_output)
+    original = OllamaRuntime.request_json
+    monkeypatch.setenv('LOCAL_VISION_MODEL', 'qwen3-vl:2b-instruct')
+    def request(self, method, path, payload=None):
+        result = original(self, method, path, payload)
+        if path == '/api/tags':
+            result['models'][0]['name'] = 'qwen3-vl:2b-instruct'
+        elif path == '/api/chat':
+            result['model'] = 'qwen3-vl:2b-instruct'
+        return result
+    monkeypatch.setattr(OllamaRuntime, 'request_json', request)
+    return calls
+
+
+def single_output():
+    return {'findings': [{'classification': 'OBSERVED', 'component': 'front bumper',
+                          'region': 'front', 'description': 'The bumper appears damaged.'}],
+            'limitations': ['Hidden damage cannot be assessed from this photo.']}
+
+
+def test_single_image_profile_binds_the_only_actual_image_and_discloses_omissions(client, monkeypatch):
+    calls = instruct_double(monkeypatch, single_output())
+    request = case(); request['images'][0]['image_id'] = 'buyer_front_001'
+    report = client.post('/api/v1/local-inspections', json=request).json()
+    assert report['outcome'] == 'COMPLETED'
+    assert report['findings'][0]['image_ids'] == ['buyer_front_001']
+    assert report['provenance']['prompt_version'] == 'single-image-observation-v1'
+    assert any('one visible observation' in text for text in report['limitations'])
+    assert len(report['checks']) == 6 and all(check['status'] == 'UNKNOWN' for check in report['checks'])
+    chat = next(payload for _, path, payload in calls if path == '/api/chat')
+    assert len(chat['messages'][1]['images']) == 1 and 'buyer_front_001' not in json.dumps(chat)
+    assert 'image_ids' not in json.dumps(chat['format'])
+
+
+@pytest.mark.parametrize('mutation', ['invented_id', 'too_many', 'unsafe', 'bad_limit'])
+def test_single_image_profile_rejects_untrusted_extra_or_unsafe_output(client, monkeypatch, mutation):
+    result = single_output()
+    if mutation == 'invented_id': result['findings'][0]['image_ids'] = ['another_photo']
+    elif mutation == 'too_many': result['findings'].append(dict(result['findings'][0]))
+    elif mutation == 'unsafe': result['findings'][0]['description'] = 'No further inspection is required.'
+    else: result['limitations'] = ['No further inspection is required.']
+    instruct_double(monkeypatch, result)
+    report = client.post('/api/v1/local-inspections', json=case()).json()
+    assert report['reason_code'] == 'INVALID_MODEL_OUTPUT'
+    assert_no_report_content(report)
+
+
+def test_instruct_multi_image_request_keeps_existing_explicit_id_validation(client, monkeypatch):
+    data = output(); data['findings'][0]['image_ids'] = ['not_in_request']
+    instruct_double(monkeypatch, data)
+    request = case(); request['images'].append(image_input(image_id='side'))
+    report = client.post('/api/v1/local-inspections', json=request).json()
+    assert report['reason_code'] == 'INVALID_MODEL_OUTPUT'
+    assert_no_report_content(report)
+
+
 def test_disabled_local_analysis_has_no_transport_or_outbound_dependency(client, monkeypatch):
     monkeypatch.delenv('LOCAL_VISION_ENABLED', raising=False)
     def unexpected(*args, **kwargs): raise AssertionError('disabled analysis attempted I/O')
